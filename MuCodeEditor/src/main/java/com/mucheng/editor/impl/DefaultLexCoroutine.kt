@@ -54,8 +54,8 @@ open class DefaultLexCoroutine(private val editor: MuCodeEditor) : LexInterface 
         val contentProvider = editor.getContentProvider()
         spanProvider.clear()
 
+        val lexer = controller.language.getLexer()!!
         try {
-            val lexer = controller.language.getLexer()!!
             lexer.clearAll()
             lexer.setSources(contentProvider.getLineContents())
             lexer.analyze()
@@ -81,6 +81,10 @@ open class DefaultLexCoroutine(private val editor: MuCodeEditor) : LexInterface 
             setParseTokens(tokens)
         } catch (e: CancellationException) {
             spanProvider.clear()
+        } catch (e: IndexOutOfBoundsException) {
+            spanProvider.clear()
+        } finally {
+            lexer.clearAll()
         }
 
         stateController.lexCompletion()
@@ -102,13 +106,16 @@ open class DefaultLexCoroutine(private val editor: MuCodeEditor) : LexInterface 
 
         // 添加进去
         neededTokens.forEach {
-            val type = it.first
-            val range = it.second.second
-            val column = range.first.column
-            val startRow = range.first.row
-            val endRow = range.second.row
-            val text = contentProvider.getLineContent(column).substring(startRow, endRow)
-            panel.addDefinedAutoCompleteItem(AutoCompleteItem(text, type))
+            try {
+                val type = it.first
+                val range = it.second.second
+                val column = range.first.column
+                val startRow = range.first.row
+                val endRow = range.second.row
+                val text = contentProvider.getLineContent(column).substring(startRow, endRow)
+                panel.addDefinedAutoCompleteItem(AutoCompleteItem(text, type))
+            } catch (e: IndexOutOfBoundsException) {
+            }
         }
 
         panel.notifyAutoCompleteItemChanged()

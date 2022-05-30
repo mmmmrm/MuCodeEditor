@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
             setEnabled(true)
             setLanguage(EcmaScriptLanguage(this))
             setDisplayDividingLine(false)
-            //theme.setUseDarkColors(true)
+            theme.setUseDarkColors(true)
         }.style.apply {
             setCursorAnimation(CursorMovingAnimation(editor))
             setTypefaceFromAssets(this@MainActivity, "font/HarmonyOS-Sans-Regular.ttf")
