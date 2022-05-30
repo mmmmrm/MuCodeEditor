@@ -27,4 +27,5 @@
 
 package com.mucheng.editor.exceptions
 
-class ColorNotFoundException : RuntimeException("Cannot found target color in HashMap")
+class ColorNotFoundException :
+    RuntimeException("Cannot found target color in HashMap")

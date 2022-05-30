@@ -301,6 +301,7 @@ open class EcmaScriptLexer : BaseLexer<EcmaScriptToken>() {
                     ColumnRowPosition(column, start),
                     ColumnRowPosition(column, end)
                 )
+                row = end
                 return true
             }
 

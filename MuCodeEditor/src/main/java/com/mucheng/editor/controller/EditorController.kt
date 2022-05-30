@@ -50,7 +50,7 @@ open class EditorController(private val editor: MuCodeEditor) : BaseController()
     var displayLineNumber = true
         private set
 
-    var displayBreakPoint = true
+    var displayDividingLine = true
         private set
 
     var isEnabledAutoCompletion = true
@@ -83,9 +83,9 @@ open class EditorController(private val editor: MuCodeEditor) : BaseController()
         }
     }
 
-    fun setEnabledBreakPoint(isEnabled: Boolean) {
-        execBlockIfNeeded(this.displayBreakPoint != isEnabled) {
-            this.displayBreakPoint = isEnabled
+    fun setDisplayDividingLine(isEnabled: Boolean) {
+        execBlockIfNeeded(this.displayDividingLine != isEnabled) {
+            this.displayDividingLine = isEnabled
             editor.postInvalidate()
         }
     }
@@ -93,7 +93,6 @@ open class EditorController(private val editor: MuCodeEditor) : BaseController()
     fun setEnabledAutoCompletion(isEnabled: Boolean) {
         execBlockIfNeeded(this.isEnabledAutoCompletion != isEnabled) {
             this.isEnabledAutoCompletion = isEnabled
-            editor.postInvalidate()
         }
     }
 

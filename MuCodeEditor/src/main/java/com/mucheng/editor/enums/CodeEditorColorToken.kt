@@ -44,16 +44,26 @@ class CodeEditorColorToken private constructor() : BaseToken(null, "") {
         val BACKGROUND_COLOR = CodeEditorColorToken() // 编辑器背景色
         val IDENTIFIER_COLOR = CodeEditorColorToken() // 标识符颜色
         val SELECT_BACKGROUND_COLOR = CodeEditorColorToken() // 选中背景颜色
-        val SELECT_TEXT_COLOR = CodeEditorColorToken() // 选中文字颜色
+
+        val CURSOR_COLOR = CodeEditorColorToken() // 光标颜色
+        val LINE_NUMBER_COLOR = CodeEditorColorToken() // 行号颜色
+        val DIVIDING_LINE_COLOR = CodeEditorColorToken() // 分割线颜色
         val HANDLE_TEXT_BACKGROUND_COLOR = CodeEditorColorToken() // 选中时处理文本的角标的颜色
+
         val KEYWORD_COLOR = CodeEditorColorToken() // 关键字颜色
         val NUMERICAL_VALUE_COLOR = CodeEditorColorToken() // 数值颜色
         val STRING_COLOR = CodeEditorColorToken() // 字符串颜色
         val COMMENT_COLOR = CodeEditorColorToken() // 注释颜色
         val SYMBOL_COLOR = CodeEditorColorToken()
         val SPECIAL_COLOR = CodeEditorColorToken() // 特殊（值）颜色
-        val USER_DEFINE_COLOR = CodeEditorColorToken() // 用户定义的颜色
 
+        val AUTO_COMPLETE_PANEL_BACKGROUND = CodeEditorColorToken() // 自动补全栏颜色
+        val AUTO_COMPLETE_PANEL_ICON_COLOR = CodeEditorColorToken()
+        val AUTO_COMPLETE_PANEL_TITLE_COLOR = CodeEditorColorToken()
+        val AUTO_COMPLETE_PANEL_SIMPLE_DESCRIPTION_COLOR = CodeEditorColorToken()
+        val AUTO_COMPLETE_PANEL_TYPE_COLOR = CodeEditorColorToken()
+
+        val USER_DEFINE_COLOR = CodeEditorColorToken() // 用户定义的颜色
     }
 
 }

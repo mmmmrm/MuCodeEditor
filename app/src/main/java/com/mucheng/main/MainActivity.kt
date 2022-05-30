@@ -19,9 +19,10 @@ class MainActivity : AppCompatActivity() {
         val editor = findViewById<MuCodeEditor>(R.id.editor)
 
         editor.getController().apply {
-            setEnabledBreakPoint(false)
             setEnabled(true)
             setLanguage(EcmaScriptLanguage(this))
+            setDisplayDividingLine(false)
+            //theme.setUseDarkColors(true)
         }.style.apply {
             setCursorAnimation(CursorMovingAnimation(editor))
             setTypefaceFromAssets(this@MainActivity, "font/HarmonyOS-Sans-Regular.ttf")

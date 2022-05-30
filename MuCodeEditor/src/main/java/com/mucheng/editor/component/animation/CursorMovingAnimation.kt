@@ -29,16 +29,20 @@
 
 package com.mucheng.editor.component.animation
 
+import android.animation.Animator
 import android.animation.ValueAnimator
 import com.mucheng.editor.component.animation.base.CursorAnimation
 import com.mucheng.editor.util.getColumnY
 import com.mucheng.editor.views.MuCodeEditor
 
 class CursorMovingAnimation(private val editor: MuCodeEditor) : CursorAnimation,
-    ValueAnimator.AnimatorUpdateListener {
+    ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
+
+    private var animating = false
 
     private var animateXAnimator = ValueAnimator().apply {
         addUpdateListener(this@CursorMovingAnimation)
+        addListener(this@CursorMovingAnimation)
     }
     private var animateYAnimator = ValueAnimator()
     private var startX = 0f
@@ -109,8 +113,24 @@ class CursorMovingAnimation(private val editor: MuCodeEditor) : CursorAnimation,
         animateYAnimator.duration = time
     }
 
+    override fun animating(): Boolean {
+        return animating
+    }
+
     override fun onAnimationUpdate(animation: ValueAnimator?) {
         editor.postInvalidateOnAnimation()
     }
+
+    override fun onAnimationStart(animation: Animator?) {
+        animating = true
+    }
+
+    override fun onAnimationEnd(animation: Animator?) {
+        animating = false
+    }
+
+    override fun onAnimationCancel(animation: Animator?) {}
+
+    override fun onAnimationRepeat(animation: Animator?) {}
 
 }

@@ -1,7 +1,0 @@
-<Token:: LET to (1, 0..2) >
-<Token:: IDENTIFIER to (1, 4..15) >
-<Token:: = to (1, 17..17) >
-<Token:: `Template` to (1, 19..19) >
-<Token:: `Template` to (2, 0..14) >
-<Token:: `Template` to (3, 0..0) >
-<Token:: // to (5, 0..6) >

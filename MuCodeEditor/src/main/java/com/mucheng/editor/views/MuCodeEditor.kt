@@ -278,13 +278,6 @@ open class MuCodeEditor @JvmOverloads constructor(
                     mInputConnection.onCursorRight()
                 }
 
-                KeyEvent.KEYCODE_M -> {
-                    val clipText = getClipboardText()
-                    if (clipText.isNotEmpty()) {
-                        mInputConnection.commitText(clipText, 0)
-                    }
-                }
-
                 KeyEvent.KEYCODE_COPY -> {
                     copySelectionText()
                 }

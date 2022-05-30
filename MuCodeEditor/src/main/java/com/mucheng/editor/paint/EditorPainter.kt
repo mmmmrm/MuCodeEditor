@@ -82,6 +82,10 @@ class EditorPainter(
 
     private var handleDropSecondY = 0f
 
+    private var handleDropColor = 0
+
+    private var handleDropColorFilter: PorterDuffColorFilter? = null
+
     //当开始绘制时
     fun onDraw(canvas: Canvas) {
         resetParams()
@@ -92,7 +96,6 @@ class EditorPainter(
         }
 
         drawLineNumber(canvas)
-        drawBreakPoint(canvas)
         drawDividingLine(canvas)
         drawSelection(canvas)
         drawCodeText(canvas)
@@ -101,6 +104,7 @@ class EditorPainter(
 
     private fun resetParams() {
         paddingLeft = SPACE_LEFT
+        biggestX = 0f
 
         paints.lineNumberPaint.typeface = controller.style.typeface
         paints.codeTextPaint.typeface = controller.style.typeface
@@ -108,11 +112,29 @@ class EditorPainter(
         paints.codeTextSelectionBackgroundPaint.color =
             controller.theme.getColor(CodeEditorColorToken.SELECT_BACKGROUND_COLOR)
 
-        biggestX = 0f
         clipRect.left = editor.getScroller().currX
         clipRect.top = editor.getScroller().currY
         clipRect.right = editor.getScroller().currX + editor.width
         clipRect.bottom = editor.getScroller().currY + editor.height
+
+        paints.cursorPaint.color =
+            controller.theme.getColor(CodeEditorColorToken.CURSOR_COLOR)
+
+        paints.lineNumberPaint.color =
+            controller.theme.getColor(CodeEditorColorToken.LINE_NUMBER_COLOR)
+
+        paints.dividingLinePaint.color =
+            controller.theme.getColor(CodeEditorColorToken.DIVIDING_LINE_COLOR)
+
+        val handleDropNeededColor =
+            controller.theme.getColor(CodeEditorColorToken.HANDLE_TEXT_BACKGROUND_COLOR)
+
+        if (handleDropColor != handleDropNeededColor || handleDropColorFilter == null) {
+            handleDropColorFilter =
+                PorterDuffColorFilter(handleDropNeededColor, PorterDuff.Mode.SRC_IN)
+            handleDropColor = handleDropNeededColor
+        }
+        paints.codeTextSelectionHandlerPaint.colorFilter = handleDropColorFilter
     }
 
     private fun drawClip(canvas: Canvas) {
@@ -145,18 +167,9 @@ class EditorPainter(
         paddingLeft += paints.lineNumberPaint.measureText(endLine.toString()) + SPACE_LEFT
     }
 
-    //绘制断点
-    private fun drawBreakPoint(canvas: Canvas) {
-        if (!editor.getController().displayBreakPoint) {
-            return
-        }
-
-        TODO("待实现")
-    }
-
     //绘制分割线
     private fun drawDividingLine(canvas: Canvas) {
-        if (!controller.displayLineNumber) return
+        if (!controller.displayLineNumber || !controller.displayDividingLine) return
 
         canvas.drawLine(
             paddingLeft,

@@ -31,9 +31,7 @@ package com.mucheng.editor.simple
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -48,9 +46,11 @@ import com.google.android.material.textview.MaterialTextView
 import com.mucheng.editor.R
 import com.mucheng.editor.base.BaseAutoCompletionPanel
 import com.mucheng.editor.controller.EditorController
+import com.mucheng.editor.enums.CodeEditorColorToken
 import com.mucheng.editor.util.DeviceUtil
 import com.mucheng.editor.util.dp
 import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
 
 @Suppress("LeakingThis", "BlockingMethodInNonBlockingContext")
 open class CodeAutoCompletionPanel(
@@ -58,17 +58,9 @@ open class CodeAutoCompletionPanel(
     controller: EditorController,
 ) : BaseAutoCompletionPanel(context, controller) {
 
-    private val layoutManager: LinearLayoutManager by lazy {
-        LinearLayoutManager(context,
-            LinearLayoutManager.VERTICAL,
-            false)
-    }
-
     private val adapter by lazy { CodePanelAdapter() }
 
-    private val content by lazy { createContentView() }
-
-    private val background by lazy { createPanelBackground() }
+    private val lock = Mutex()
 
     init {
         //设置默认弹出样式
@@ -89,10 +81,9 @@ open class CodeAutoCompletionPanel(
             return
         }
 
-        contentView = content
+        contentView = createContentView()
         super.show()
     }
-
 
     private fun createPanelBackground(): GradientDrawable {
         val drawable = GradientDrawable()
@@ -102,8 +93,8 @@ open class CodeAutoCompletionPanel(
 
         drawable.orientation = GradientDrawable.Orientation.TL_BR
         drawable.colors = intArrayOf(
-            Color.parseColor("#ffffff"),
-            Color.parseColor("#ffffff")
+            controller.theme.getColor(CodeEditorColorToken.AUTO_COMPLETE_PANEL_BACKGROUND),
+            controller.theme.getColor(CodeEditorColorToken.AUTO_COMPLETE_PANEL_BACKGROUND)
         )
         drawable.alpha = 200
 
@@ -130,7 +121,7 @@ open class CodeAutoCompletionPanel(
                 }
 
                 //设置背景
-                root.background = background
+                root.background = createPanelBackground()
                 root.cardElevation = 18f
                 root.setCardBackgroundColor(0)
                 root.isClickable = true
@@ -138,7 +129,9 @@ open class CodeAutoCompletionPanel(
                 layout.addView(root)
 
                 val recyclerView = RecyclerView(context)
-                recyclerView.layoutManager = layoutManager
+                recyclerView.layoutManager = LinearLayoutManager(context,
+                    LinearLayoutManager.VERTICAL,
+                    false)
                 recyclerView.adapter = adapter
                 recyclerView.layoutParams = FrameLayout.LayoutParams(-1, -1)
                 root.addView(recyclerView)
@@ -205,8 +198,13 @@ open class CodeAutoCompletionPanel(
     // 请求自动补全面板
     override fun requireAutoCompletionPanel() {
         CoroutineScope(Dispatchers.Main).launch {
-            // 进行文本过滤
-            requireAutoCompletionItem()
+            lock.lock()
+            try {
+                // 进行文本过滤
+                requireAutoCompletionItem()
+            } finally {
+                lock.unlock()
+            }
         }
     }
 
@@ -214,11 +212,14 @@ open class CodeAutoCompletionPanel(
 
         private var itemCount = items.size
 
-        @Suppress("BlockingMethodInNonBlockingContext")
+        @Suppress("BlockingMethodInNonBlockingContext", "ControlFlowWithEmptyBody")
         override suspend fun filter(words: StringBuilder) {
             withContext(Dispatchers.IO) {
 
                 items.clear()
+                cacheAddedItems.forEach {
+                    addAutoCompleteItem(it)
+                }
                 getLanguage().getAutoCompleteItem().forEach {
                     addAutoCompleteItem(it)
                 }
@@ -228,7 +229,7 @@ open class CodeAutoCompletionPanel(
                     return@withContext
                 }
 
-                val matches = items.asSequence().filter { it -> it.name.startsWith(words) }.toList()
+                val matches = items.asSequence().filter { it.name.startsWith(words) }.toList()
 
                 items.clear()
                 items.addAll(matches)
@@ -240,13 +241,27 @@ open class CodeAutoCompletionPanel(
 
                 itemCount = matches.count()
 
-                show()
-                notifyAutoCompleteItemChanged()
+                val cursorAnimation = controller.style.cursorAnimation
+                if (cursorAnimation == null) {
+                    notifyAutoCompleteItemAndDisplay()
+                    return@withContext
+                }
+
+                // 当正在执行动画时不应该更新并显示，使用 while 卡住协程
+                while (cursorAnimation.animating()) {
+                }
+
+                notifyAutoCompleteItemAndDisplay()
             }
         }
 
         override fun getItemCount(): Int {
             return itemCount
+        }
+
+        private fun notifyAutoCompleteItemAndDisplay() {
+            notifyAutoCompleteItemChanged()
+            show()
         }
 
     }
@@ -275,9 +290,13 @@ open class CodeAutoCompletionPanel(
                 mOnAutoCompletionItemClickListener.onAutoCompletionItemClick(it, item)
             }
             holder.icon.setImageResource(mAutoCompleteHelper.getTypeIconResource(type))
+            holder.icon.setColorFilter(controller.theme.getColor(CodeEditorColorToken.AUTO_COMPLETE_PANEL_ICON_COLOR))
             holder.name.text = name
+            holder.name.setTextColor(controller.theme.getColor(CodeEditorColorToken.AUTO_COMPLETE_PANEL_TITLE_COLOR))
             holder.simpleDescription.text = mAutoCompleteHelper.getSimpleDescription(type, name)
+            holder.simpleDescription.setTextColor(controller.theme.getColor(CodeEditorColorToken.AUTO_COMPLETE_PANEL_SIMPLE_DESCRIPTION_COLOR))
             holder.type.text = mAutoCompleteHelper.getTypeDescription(type)
+            holder.type.setTextColor(controller.theme.getColor(CodeEditorColorToken.AUTO_COMPLETE_PANEL_TYPE_COLOR))
         }
 
         override fun getItemCount() = getAutoCompleteFilter()?.getItemCount() ?: items.size

@@ -31,6 +31,7 @@ package com.mucheng.editor.impl
 
 import com.mucheng.editor.base.BaseToken
 import com.mucheng.editor.colorful.LexInterface
+import com.mucheng.editor.common.AutoCompleteItem
 import com.mucheng.editor.position.ColumnRowPosition
 import com.mucheng.editor.views.MuCodeEditor
 import kotlinx.coroutines.*
@@ -86,12 +87,31 @@ open class DefaultLexCoroutine(private val editor: MuCodeEditor) : LexInterface 
     }
 
     override suspend fun parse() {
-        if (controller.language.getParser() == null) {
+        val panel = controller.autoCompletionPanel
+        if (controller.language.getParser() == null || panel == null) {
             return
         }
 
-        val parser = controller.language.getParser()!!
+        panel.clearDefinedAutoCompleteItem()
 
+        val parser = controller.language.getParser()!!
+        parser.parse()
+
+        val neededTokens = parser.getNeededToken()
+        val contentProvider = editor.getContentProvider()
+
+        // 添加进去
+        neededTokens.forEach {
+            val type = it.first
+            val range = it.second.second
+            val column = range.first.column
+            val startRow = range.first.row
+            val endRow = range.second.row
+            val text = contentProvider.getLineContent(column).substring(startRow, endRow)
+            panel.addDefinedAutoCompleteItem(AutoCompleteItem(text, type))
+        }
+
+        panel.notifyAutoCompleteItemChanged()
     }
 
     private fun setParseTokens(token: List<Pair<BaseToken, Pair<ColumnRowPosition, ColumnRowPosition>>>) {
@@ -100,6 +120,7 @@ open class DefaultLexCoroutine(private val editor: MuCodeEditor) : LexInterface 
         }
 
         val parser = controller.language.getParser()!!
+        parser.clearAll()
         parser.setSources(token as List<Pair<Nothing, Pair<ColumnRowPosition, ColumnRowPosition>>>)
     }
 

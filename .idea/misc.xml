@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidProjects/MuCodeEditorExample/MuCodeEditor/src/main/res/drawable/ic_auto_completion_function.xml" value="0.166" />
+        <entry key="..\:/AndroidProjects/MuCodeEditorExample/MuCodeEditor/src/main/res/drawable/ic_handle_drop.xml" value="0.166" />
+        <entry key="..\:/AndroidProjects/MuCodeEditorExample/MuCodeEditor/src/main/res/layout/layout_code_auto_completion_panel_item.xml" value="0.4466666666666667" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/QuickCodeEditor/src/main/res/drawable/ic_handle_drop.xml" value="0.166" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/QuickCodeEditor/src/main/res/drawable/ic_handle_drop_left.xml" value="0.166" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/QuickCodeEditor/src/main/res/drawable/ic_handle_drop_right.xml" value="0.165" />

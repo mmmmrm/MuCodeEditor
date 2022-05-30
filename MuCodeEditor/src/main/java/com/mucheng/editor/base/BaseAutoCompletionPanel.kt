@@ -45,6 +45,8 @@ abstract class BaseAutoCompletionPanel(
 
     protected val items: MutableList<AutoCompleteItem> = ArrayList()
 
+    protected val cacheAddedItems: MutableList<AutoCompleteItem> = ArrayList()
+
     protected var mAutoCompleteHelper: BaseAutoCompleteHelper = DefaultAutoCompleteHelper()
 
     protected var mOnAutoCompletionItemClickListener: OnAutoCompletionItemClickListener =
@@ -54,8 +56,16 @@ abstract class BaseAutoCompletionPanel(
 
     private var mLanguage: BaseLanguage = controller.language
 
-    open fun addAutoCompleteItem(item: AutoCompleteItem) {
+    internal open fun addAutoCompleteItem(item: AutoCompleteItem) {
         items.add(item)
+    }
+
+    open fun addDefinedAutoCompleteItem(item: AutoCompleteItem) {
+        cacheAddedItems.add(item)
+    }
+
+    open fun clearDefinedAutoCompleteItem() {
+        cacheAddedItems.clear()
     }
 
     abstract fun notifyAutoCompleteItemChanged()
@@ -146,8 +156,12 @@ abstract class BaseAutoCompletionPanel(
             }
 
             val nextCommit = item.name.replace(text, "")
+            controller.setEnabledAutoCompletion(false)
+
             inputConnection.commitText(nextCommit, 0)
             dismiss()
+
+            controller.setEnabledAutoCompletion(true)
         }
 
     }

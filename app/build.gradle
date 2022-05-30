@@ -29,7 +29,25 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
 }
+
+task makeJar(type: Copy) {
+
+    def jarName = "MuCodeEditor"
+
+    //删除存在的
+    delete 'build/libs/' + jarName + ".jar"
+    //设置拷贝的文件
+    from("build/intermediates/aar_main_jar/debug")
+    //打进jar包后的文件目录,将classes.jar放入build/libs/目录下
+    into('build/libs/')
+    //要打包的jar文件
+    include('classes.jar')
+    //重命名
+    rename('classes.jar', jarName  + ".jar")
+}
+makeJar.dependsOn(build)
 
 dependencies {
 

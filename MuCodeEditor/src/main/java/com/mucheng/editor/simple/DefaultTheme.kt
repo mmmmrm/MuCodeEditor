@@ -66,23 +66,103 @@ class DefaultTheme : AbstractTheme() {
         // 特殊值颜色
         toPair(CodeEditorColorToken.SPECIAL_COLOR, "#FF51AAFF".parseColor()) putTo lightColors
 
+        // 光标颜色
+        toPair(CodeEditorColorToken.CURSOR_COLOR, "#FF000000".parseColor()) putTo lightColors
+
+        // 行号颜色
+        toPair(CodeEditorColorToken.LINE_NUMBER_COLOR, "#FF000000".parseColor()) putTo lightColors
+
+        // 分割线颜色
+        toPair(CodeEditorColorToken.DIVIDING_LINE_COLOR, "#FFE0E0E0".parseColor()) putTo lightColors
+
         // 选中文本的背景色
         toPair(CodeEditorColorToken.SELECT_BACKGROUND_COLOR,
             "#D08aa8fe".parseColor()) putTo lightColors
+
+        toPair(CodeEditorColorToken.HANDLE_TEXT_BACKGROUND_COLOR,
+            "#FF497CE3".parseColor()) putTo lightColors
 
         // 符号的颜色
         toPair(CodeEditorColorToken.SYMBOL_COLOR, "#FF51AAFF".parseColor()) putTo lightColors
 
         // 注释的颜色
         toPair(CodeEditorColorToken.COMMENT_COLOR, "#FF586694".parseColor()) putTo lightColors
+
+        toPair(CodeEditorColorToken.AUTO_COMPLETE_PANEL_BACKGROUND,
+            "#FFFFFFFF".parseColor()) putTo lightColors
+
+        toPair(CodeEditorColorToken.AUTO_COMPLETE_PANEL_ICON_COLOR,
+            "#FF8BA8FF".parseColor()) putTo lightColors
+
+        toPair(CodeEditorColorToken.AUTO_COMPLETE_PANEL_TITLE_COLOR,
+            "#FF202331".parseColor()) putTo lightColors
+
+        toPair(CodeEditorColorToken.AUTO_COMPLETE_PANEL_SIMPLE_DESCRIPTION_COLOR,
+            "#FF535353".parseColor()) putTo lightColors
+
+        toPair(CodeEditorColorToken.AUTO_COMPLETE_PANEL_TYPE_COLOR,
+            "#FF535353".parseColor()) putTo lightColors
     }
 
     // 添加深色
     private fun addDarkColors() {
         // 编辑器背景颜色
-        toPair(CodeEditorColorToken.BACKGROUND_COLOR, "#FF000000".parseColor()) putTo darkColors
+        toPair(CodeEditorColorToken.BACKGROUND_COLOR, "#FF1E1E1E".parseColor()) putTo darkColors
+
+        // 关键字颜色
+        toPair(CodeEditorColorToken.KEYWORD_COLOR, "#FFc678dd".parseColor()) putTo darkColors
+
         // 标识符颜色
-        toPair(CodeEditorColorToken.IDENTIFIER_COLOR, "#FFFFFFFF".parseColor()) putTo darkColors
+        toPair(CodeEditorColorToken.IDENTIFIER_COLOR, "#FFA4ABCC".parseColor()) putTo darkColors
+
+        // 字符串颜色
+        toPair(CodeEditorColorToken.STRING_COLOR, "#FFC3E88D".parseColor()) putTo darkColors
+
+        // 数字颜色
+        toPair(CodeEditorColorToken.NUMERICAL_VALUE_COLOR,
+            "#FF497CE3".parseColor()) putTo darkColors
+
+        // 特殊值颜色
+        toPair(CodeEditorColorToken.SPECIAL_COLOR, "#FF51AAFF".parseColor()) putTo darkColors
+
+        // 光标颜色
+        toPair(CodeEditorColorToken.CURSOR_COLOR, "#FFF5F5F7".parseColor()) putTo darkColors
+
+        // 行号颜色
+        toPair(CodeEditorColorToken.LINE_NUMBER_COLOR, "#FFA4ABCC".parseColor()) putTo darkColors
+
+        // 分割线颜色
+        toPair(CodeEditorColorToken.DIVIDING_LINE_COLOR, "#FFE0E0E0".parseColor()) putTo darkColors
+
+        // 选中文本的背景色
+        toPair(CodeEditorColorToken.SELECT_BACKGROUND_COLOR,
+            "#FF515C6A".parseColor()) putTo darkColors
+
+        // 选中文本的角标颜色
+        toPair(CodeEditorColorToken.HANDLE_TEXT_BACKGROUND_COLOR,
+            "#FF497CE3".parseColor()) putTo darkColors
+
+        // 符号的颜色
+        toPair(CodeEditorColorToken.SYMBOL_COLOR, "#FF51AAFF".parseColor()) putTo darkColors
+
+        // 注释的颜色
+        toPair(CodeEditorColorToken.COMMENT_COLOR, "#FF858C99".parseColor()) putTo darkColors
+
+        toPair(CodeEditorColorToken.AUTO_COMPLETE_PANEL_BACKGROUND,
+            "#FF444267".parseColor()) putTo darkColors
+
+        toPair(CodeEditorColorToken.AUTO_COMPLETE_PANEL_ICON_COLOR,
+            "#FF8BA8FF".parseColor()) putTo darkColors
+
+        toPair(CodeEditorColorToken.AUTO_COMPLETE_PANEL_TITLE_COLOR,
+            "#FFA4ABCC".parseColor()) putTo darkColors
+
+        toPair(CodeEditorColorToken.AUTO_COMPLETE_PANEL_SIMPLE_DESCRIPTION_COLOR,
+            "#FF676E95".parseColor()) putTo darkColors
+
+        toPair(CodeEditorColorToken.AUTO_COMPLETE_PANEL_TYPE_COLOR,
+            "#FF676E95".parseColor()) putTo darkColors
+
     }
 
 }

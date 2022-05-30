@@ -1,5 +1,1 @@
-let templateText = `
-Template String
-`
-
-// Test
+`a`

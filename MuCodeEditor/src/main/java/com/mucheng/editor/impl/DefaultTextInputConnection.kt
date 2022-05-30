@@ -130,7 +130,6 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
 
         val cursorAnimation = editor.getController().style.cursorAnimation
         execCursorAnimationIfNeeded(cursorAnimation, editor) {
-            val startColumn = cursor.column
             onDeleteInternal(contentProvider, cursor)
             // 更新高亮
             editor.getController().state.lex(lexCoroutine)

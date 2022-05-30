@@ -30,29 +30,35 @@
 package com.mucheng.editor.test
 
 import com.mucheng.editor.language.ecmascript.EcmaScriptLexer
+import com.mucheng.editor.language.ecmascript.EcmaScriptParser
 import com.mucheng.editor.language.ecmascript.EcmaScriptToken
 import java.io.File
 import java.io.StringReader
-import java.util.Locale.filter
 
 fun main() {
-    val code = getLexerContent()
+    val code = getParserContent()
     val lexer = EcmaScriptLexer()
     lexer.setSources(code)
     lexer.analyze()
 
+    val parser = EcmaScriptParser()
+
     val tokens = lexer.getTokens()
-        .filter { it.first != EcmaScriptToken.WHITESPACE }
-        .joinToString(separator = "\n") {
-            val second = it.second
-            "<Token:: ${it.first} to (${second.first.column}, ${second.first.row}..${second.second.row - 1}) >"
-        }
-    val stringReader = StringReader(tokens)
-    val bufferWriter = File("D:\\AndroidProjects\\MuCodeEditorExample\\MuCodeEditor\\src\\main\\java\\com\\mucheng\\editor\\test\\lexerOutput.txt").bufferedWriter()
+    parser.setSources(tokens)
+    parser.parse()
+    val neededTokens = parser.getNeededToken().joinToString(separator = "\n") {
+        val second = it.second
+        "<Token:: ${it.first} to (${second.second.first.column}, ${second.second.first.row}..${second.second.second.row - 1}) >"
+    }
+
+    val stringReader = StringReader(neededTokens)
+    val bufferWriter =
+        File("D:\\AndroidProjects\\MuCodeEditorExample\\MuCodeEditor\\src\\main\\java\\com\\mucheng\\editor\\test\\parserOutput.txt").also { it.createNewFile() }
+            .bufferedWriter()
     val buffer = CharArray(2048)
     var flag: Int
     bufferWriter.use {
-        while (stringReader.read(buffer).also { flag = it }!= -1) {
+        while (stringReader.read(buffer).also { flag = it } != -1) {
             bufferWriter.write(buffer, 0, flag)
             bufferWriter.flush()
         }
@@ -60,6 +66,6 @@ fun main() {
 
 }
 
-fun getLexerContent() =
+fun getParserContent() =
     File("D:\\AndroidProjects\\MuCodeEditorExample\\MuCodeEditor\\src\\main\\java\\com\\mucheng\\editor\\test\\test.js").bufferedReader()
         .readText().split("\r\n").toList()

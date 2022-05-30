@@ -45,4 +45,6 @@ interface CursorAnimation {
 
     fun time(time: Long)
 
+    fun animating(): Boolean
+
 }

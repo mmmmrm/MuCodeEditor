@@ -29,7 +29,7 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="36dp"
     android:height="36dp"
-    android:tint="#497ce3"
+    android:tint="#FF497CE3"
     android:viewportWidth="24"
     android:viewportHeight="24">
 

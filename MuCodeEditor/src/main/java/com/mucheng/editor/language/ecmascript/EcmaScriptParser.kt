@@ -29,26 +29,87 @@
 
 package com.mucheng.editor.language.ecmascript
 
+import com.mucheng.editor.base.BaseAutoCompleteHelper
 import com.mucheng.editor.base.BaseParser
+import com.mucheng.editor.enums.CodeEditorColorToken
 import com.mucheng.editor.position.ColumnRowPosition
+import java.nio.file.Files.find
 
-class EcmaScriptParser : BaseParser<EcmaScriptToken>() {
+open class EcmaScriptParser : BaseParser<EcmaScriptToken>() {
 
     override fun parse() {
-        super.parse()
-
-        for (pair in mSources) {
+        var lastToken: EcmaScriptToken? = null
+        var lastRange: Pair<ColumnRowPosition, ColumnRowPosition>? = null
+        mSources.forEachIndexed { index, pair ->
             val token = pair.first
             val range = pair.second
 
-            if (handleVariable()) continue
+            this.index = index
+            if (lastToken != null) {
+                handleVariable(lastToken!!, lastRange!!, token, range)
+            }
 
-
+            lastToken = token
+            lastRange = range
         }
     }
 
-    protected fun handleVariable(): Boolean {
-        return false
+    private fun handleVariable(
+        lastToken: EcmaScriptToken,
+        lastRange: Pair<ColumnRowPosition, ColumnRowPosition>,
+        token: EcmaScriptToken,
+        range: Pair<ColumnRowPosition, ColumnRowPosition>,
+    ) {
+        /*
+        * var 的判定如下
+        * var variable (=expr)
+        * */
+        if (equalsSingleLine(lastRange, range) &&
+            (lastToken == EcmaScriptToken.VAR ||
+                    lastToken == EcmaScriptToken.LET) &&
+            token == EcmaScriptToken.IDENTIFIER
+        ) {
+            addNeededToken(BaseAutoCompleteHelper.VARIABLE, token, range.first, range.second)
+            return
+        }
+
+        /*
+        * const 判定如下
+        * const name = expr(expr ∉ Symbol)
+        * */
+        if (equalsSingleLine(lastRange, range) &&
+            lastToken == EcmaScriptToken.CONST &&
+            token == EcmaScriptToken.IDENTIFIER &&
+            findOffsetToken(1) == EcmaScriptToken.EQUALS &&
+            findOffsetToken(2) != null &&
+            findOffsetToken(2)?.getColorType() != CodeEditorColorToken.SYMBOL_COLOR
+        ) {
+            addNeededToken(BaseAutoCompleteHelper.VARIABLE, token, range.first, range.second)
+        }
+
+        /**
+         * 满足以下条件判断为 function
+         * function identifier(...){
+         * ...
+         * }
+         * */
+        if (equalsSingleLine(lastRange, range) &&
+            lastToken == EcmaScriptToken.FUNCTION &&
+            token == EcmaScriptToken.IDENTIFIER &&
+            findOffsetToken(1) == EcmaScriptToken.LEFT_PARENTHESIS &&
+            find(2, EcmaScriptToken.RIGHT_PARENTHESIS, true).run {
+                if (this != -1) {
+                    val offset = this
+                    findOffsetToken(offset + 1) == EcmaScriptToken.LEFT_BRACE &&
+                            (find(offset + 2, EcmaScriptToken.RIGHT_BRACE, true) != -1)
+                } else {
+                    false
+                }
+            }
+        ) {
+            addNeededToken(BaseAutoCompleteHelper.FUNCTION, token, range.first, range.second)
+            return
+        }
     }
 
     override fun setSources(sources: List<Pair<EcmaScriptToken, Pair<ColumnRowPosition, ColumnRowPosition>>>) {
