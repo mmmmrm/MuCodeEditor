@@ -62,6 +62,9 @@ open class EditorController(private val editor: MuCodeEditor) : BaseController()
     var state = EditorStateController(this)
         private set
 
+    var action = EditorActionController(this)
+        private set
+
     var language: BaseLanguage = TextLanguage(this)
         private set
 

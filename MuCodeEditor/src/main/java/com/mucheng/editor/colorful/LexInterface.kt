@@ -29,8 +29,6 @@
 
 package com.mucheng.editor.colorful
 
-import com.mucheng.editor.enums.RescanReason
-
 interface LexInterface {
 
     suspend fun analyze()

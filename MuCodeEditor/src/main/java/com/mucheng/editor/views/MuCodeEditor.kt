@@ -109,21 +109,16 @@ open class MuCodeEditor @JvmOverloads constructor(
     open suspend fun open(inputStream: InputStream): Result<Unit> {
         return coroutineScope {
             return@coroutineScope withContext(Dispatchers.IO) {
-                val byteArrayOutputStream = ByteArrayOutputStream()
-                var flag: Int
-                val buffer = ByteArray(1024)
                 val result = runCatching {
-                    byteArrayOutputStream.use {
-                        inputStream.use {
-                            while (inputStream.read(buffer).also { flag = it } != -1) {
-                                byteArrayOutputStream.write(buffer, 0, flag)
-                                byteArrayOutputStream.flush()
-                            }
+                    val bufferedReader = inputStream.bufferedReader()
+                    bufferedReader.useLines { lineTexts ->
+                        lineTexts.forEach {
+                            mContentProvider.addColumnContent(it)
                         }
                     }
                 }
 
-                setText(String(byteArrayOutputStream.toByteArray()))
+                mController.state.lex(mLexCoroutine)
                 return@withContext result
             }
         }
