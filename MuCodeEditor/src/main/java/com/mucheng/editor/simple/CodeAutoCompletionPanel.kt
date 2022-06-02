@@ -71,7 +71,6 @@ open class CodeAutoCompletionPanel(
             context.resources.displayMetrics).toInt()
         isTouchable = true
         isFocusable = false
-        isOutsideTouchable = true
         setBackgroundDrawable(null)
         setAutoCompleteFilter(DefaultAutoCompleteFilter())
     }

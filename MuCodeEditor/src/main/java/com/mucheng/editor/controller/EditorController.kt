@@ -29,13 +29,13 @@
 
 package com.mucheng.editor.controller
 
-import com.mucheng.editor.base.BaseAutoCompletionPanel
-import com.mucheng.editor.base.BaseController
-import com.mucheng.editor.base.BaseLanguage
+import com.mucheng.editor.base.*
 import com.mucheng.editor.colorful.AbstractTheme
 import com.mucheng.editor.language.text.TextLanguage
 import com.mucheng.editor.simple.CodeAutoCompletionPanel
+import com.mucheng.editor.simple.DefaultSymbolTablePanel
 import com.mucheng.editor.simple.DefaultTheme
+import com.mucheng.editor.simple.DefaultToolOptionsPanel
 import com.mucheng.editor.views.MuCodeEditor
 
 @Suppress("unused", "LeakingThis", "MemberVisibilityCanBePrivate")
@@ -56,6 +56,9 @@ open class EditorController(private val editor: MuCodeEditor) : BaseController()
     var isEnabledAutoCompletion = true
         private set
 
+    var isEnabledSymbolTable = true
+        private set
+
     var style = EditorStyleController(this)
         private set
 
@@ -70,6 +73,12 @@ open class EditorController(private val editor: MuCodeEditor) : BaseController()
 
     var autoCompletionPanel: BaseAutoCompletionPanel? =
         CodeAutoCompletionPanel(editor.context, this)
+        private set
+
+    var toolOptionsPanel: BaseToolOptionsPanel = DefaultToolOptionsPanel(editor.context, this)
+        private set
+
+    var symbolTablePanel: BaseSymbolTablePanel? = DefaultSymbolTablePanel(editor.context, this)
         private set
 
     fun setEnabled(isEnabled: Boolean) {
@@ -99,6 +108,17 @@ open class EditorController(private val editor: MuCodeEditor) : BaseController()
         }
     }
 
+    fun setEnabledSymbolTable(isEnabled: Boolean) {
+        execBlockIfNeeded(this.isEnabledSymbolTable != isEnabled) {
+            this.isEnabledSymbolTable = isEnabled
+            if (!isEnabled) {
+                symbolTablePanel?.dismiss()
+            } else {
+                symbolTablePanel?.show()
+            }
+        }
+    }
+
     fun setLanguage(language: BaseLanguage) {
         execBlockIfNeeded(this.language != language) {
             this.language = language
@@ -112,6 +132,20 @@ open class EditorController(private val editor: MuCodeEditor) : BaseController()
     fun setAutoCompletionPanel(autoCompletionPanel: BaseAutoCompletionPanel?) {
         execBlockIfNeeded(this.autoCompletionPanel != autoCompletionPanel) {
             this.autoCompletionPanel = autoCompletionPanel
+            editor.postInvalidate()
+        }
+    }
+
+    fun setToolOptionsPanel(toolOptionsPanel: BaseToolOptionsPanel) {
+        execBlockIfNeeded(this.toolOptionsPanel != toolOptionsPanel) {
+            this.toolOptionsPanel = toolOptionsPanel
+            editor.postInvalidate()
+        }
+    }
+
+    fun setSymbolTablePanel(symbolTablePanel: BaseSymbolTablePanel) {
+        execBlockIfNeeded(this.symbolTablePanel != symbolTablePanel) {
+            this.symbolTablePanel = symbolTablePanel
             editor.postInvalidate()
         }
     }

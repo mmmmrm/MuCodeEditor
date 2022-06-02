@@ -63,6 +63,13 @@ class CodeEditorColorToken private constructor() : BaseToken(null, "") {
         val AUTO_COMPLETE_PANEL_SIMPLE_DESCRIPTION_COLOR = CodeEditorColorToken()
         val AUTO_COMPLETE_PANEL_TYPE_COLOR = CodeEditorColorToken()
 
+        val TOOL_OPTIONS_PANEL_BACKGROUND = CodeEditorColorToken()
+        val TOOL_OPTIONS_PANEL_ICON_COLOR = CodeEditorColorToken()
+        val TOOL_OPTIONS_PANEL_TEXT_COLOR = CodeEditorColorToken()
+
+        val SYMBOL_TABLE_PANEL_BACKGROUND = CodeEditorColorToken()
+        val SYMBOL_TABLE_TEXT_COLOR = CodeEditorColorToken()
+
         val USER_DEFINE_COLOR = CodeEditorColorToken() // 用户定义的颜色
     }
 

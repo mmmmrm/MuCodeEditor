@@ -47,12 +47,15 @@ class EditorStateController(private val controller: EditorController) : BaseCont
     fun selectText(position: RangePosition) {
         this.selectionRange = position
         selection = true
+        controller.autoCompletionPanel?.dismiss()
+        controller.toolOptionsPanel.show()
         getEditor().invalidate()
     }
 
     fun unselectText() {
         selectionRange = null
         selection = false
+        controller.toolOptionsPanel.dismiss()
     }
 
     fun lex(coroutine: LexInterface) {

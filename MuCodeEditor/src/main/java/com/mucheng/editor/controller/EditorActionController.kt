@@ -29,21 +29,82 @@
 
 package com.mucheng.editor.controller
 
+import android.util.Log
 import com.mucheng.editor.base.BaseController
 import com.mucheng.editor.enums.EditorAction
 import com.mucheng.editor.views.MuCodeEditor
 import java.util.*
 
-class EditorActionController(private val controller: EditorController) : BaseController() {
+open class EditorActionController(private val controller: EditorController) : BaseController() {
 
-    private val undoStack = Stack<EditorAction.Action>()
+    private val stack: MutableList<EditorAction.Action> = ArrayList()
 
-    fun undo() {
+    private val maxStackSize = 300
 
+    private var stackPointer = 0
+
+    protected val contentProvider by lazy { getEditor().getContentProvider() }
+
+    private fun clearBeforePush() {
+        while (stackPointer < stack.size) {
+            stack.removeLast()
+        }
     }
 
-    fun redo() {
+    private fun clearStack() {
+        while (stackPointer > 1 && stack.size > maxStackSize) {
+            stack.removeAt(0)
+            --stackPointer
+        }
+    }
 
+    open fun push(action: EditorAction.Action) {
+        clearBeforePush()
+        Log.e("Stacks", stack.toString())
+        if (stackPointer - 1 < 0) {
+            stack.add(action)
+            clearStack()
+            ++stackPointer
+            return
+        }
+
+        // 尝试合并
+        val element = stack.last()
+        if (!element.merge(action)) {
+            stack.add(action)
+            ++stackPointer
+        }
+        clearStack()
+    }
+
+    open fun pop(): EditorAction.Action {
+        return stack.removeLast()
+    }
+
+    open fun undo() {
+        if (!canUndo()) {
+            return
+        }
+        stack[stackPointer - 1].undo(contentProvider, getEditor())
+        --stackPointer
+        getEditor().invalidate()
+    }
+
+    open fun redo() {
+        if (!canRedo()) {
+            return
+        }
+        stack[stackPointer].redo(contentProvider, getEditor())
+        ++stackPointer
+        getEditor().invalidate()
+    }
+
+    open fun canUndo(): Boolean {
+        return stackPointer > 0 && !controller.state.selection
+    }
+
+    open fun canRedo(): Boolean {
+        return stackPointer < stack.size && !controller.state.selection
     }
 
     override fun getEditor(): MuCodeEditor {

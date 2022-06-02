@@ -29,15 +29,115 @@
 
 package com.mucheng.editor.enums
 
+import android.util.Log
+import com.mucheng.editor.position.ColumnRowPosition
+import com.mucheng.editor.text.ContentProvider
+import com.mucheng.editor.text.LineContent
+import com.mucheng.editor.util.execCursorAnimationIfNeeded
+import com.mucheng.editor.views.MuCodeEditor
+
 class EditorAction private constructor() {
 
-    abstract class Action {}
+    abstract class Action {
 
-    inner class Commit {
+        abstract var startPos: ColumnRowPosition
+        abstract var endPos: ColumnRowPosition
+        abstract var value: StringBuilder
+
+        abstract fun undo(contentProvider: ContentProvider, editor: MuCodeEditor)
+        abstract fun redo(contentProvider: ContentProvider, editor: MuCodeEditor)
+
+        abstract fun merge(action: Action): Boolean
+    }
+
+    data class CommitAction(
+        override var startPos: ColumnRowPosition,
+        override var endPos: ColumnRowPosition, override var value: StringBuilder,
+    ) : Action() {
+
+        override fun undo(contentProvider: ContentProvider, editor: MuCodeEditor) {
+            val lexCoroutine = editor.getLexCoroutine()
+            execCursorAnimationIfNeeded(editor.getController().style.cursorAnimation, editor) {
+                contentProvider.delete(startPos, endPos)
+                editor.getController().state.lex(
+                    lexCoroutine
+                )
+            }
+        }
+
+        override fun redo(contentProvider: ContentProvider, editor: MuCodeEditor) {
+            val lexCoroutine = editor.getTextInputConnection().getLexCoroutine()
+            execCursorAnimationIfNeeded(editor.getController().style.cursorAnimation, editor) {
+                contentProvider.insert(startPos, value)
+                editor.getController().state.lex(
+                    lexCoroutine
+                )
+            }
+        }
+
+        override fun merge(action: Action): Boolean {
+            if (action !is CommitAction) {
+                return false
+            }
+
+            val nextStartColumn = action.startPos.column
+            val nextStartRow = action.startPos.row
+            val endColumn = endPos.column
+            val endRow = endPos.row
+            if (nextStartColumn != endColumn || nextStartRow != endRow || value.length + action.value.length >= 10000) {
+                return false
+            }
+
+            value.append(action.value)
+            endPos = action.endPos
+            return true
+        }
 
     }
 
-    inner class Delete {
+    data class DeleteAction(
+        override var startPos: ColumnRowPosition,
+        override var endPos: ColumnRowPosition, override var value: StringBuilder,
+    ) : Action() {
+
+        override fun undo(contentProvider: ContentProvider, editor: MuCodeEditor) {
+            val lexCoroutine = editor.getTextInputConnection().getLexCoroutine()
+            execCursorAnimationIfNeeded(editor.getController().style.cursorAnimation, editor) {
+                contentProvider.insert(startPos, value)
+                editor.getController().state.lex(
+                    lexCoroutine
+                )
+            }
+        }
+
+        override fun redo(contentProvider: ContentProvider, editor: MuCodeEditor) {
+            val lexCoroutine = editor.getLexCoroutine()
+            execCursorAnimationIfNeeded(editor.getController().style.cursorAnimation, editor) {
+                contentProvider.delete(startPos, endPos)
+                editor.getController().state.lex(
+                    lexCoroutine
+                )
+            }
+        }
+
+        override fun merge(action: Action): Boolean {
+            if (action !is DeleteAction) {
+                return false
+            }
+
+            val beforeEndColumn = action.endPos.column
+            val beforeEndRow = action.endPos.row
+            val startColumn = startPos.column
+            val startRow = startPos.row
+
+            if (beforeEndColumn != startColumn || beforeEndRow != startRow || action.value.length + value.length >= 10000) {
+                return false
+            }
+
+            value.insert(0, action.value)
+            startPos = action.startPos
+            return true
+        }
 
     }
 

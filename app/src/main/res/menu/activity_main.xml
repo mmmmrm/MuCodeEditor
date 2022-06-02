@@ -48,8 +48,20 @@
     <item
         android:id="@+id/more"
         android:icon="@drawable/ic_vertical_more"
-        android:title="更多"
+        android:title="更多选项"
         app:showAsAction="always"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText,UnusedAttribute">
+        <menu>
+
+            <item
+                android:id="@+id/open"
+                android:title="打开文件" />
+
+            <item
+                android:id="@+id/save"
+                android:title="保存文件" />
+
+        </menu>
+    </item>
 
 </menu>

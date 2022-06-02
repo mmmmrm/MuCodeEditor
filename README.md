@@ -20,11 +20,19 @@
 
 行号显示
 
-代码高亮：默认的 DefaultLexCoroutine 实现了 LexCoroutineInterface，使用协程（Coroutine）实现 Lexer 异步分析
+代码高亮：默认的 DefaultLexCoroutine 实现了 LexInterface，使用协程（Coroutine）实现 Lexer 异步分析
 
 不会影响主线程，即在 I/O Coroutine 中进行 span 操作
 
 打开文件 & 保存文件 的支持
+
+使用 Parser 以实现更深层次的语法解析和自动补全
+
+通过 EditorActionController 实现 Undo & Redo 操作
+
+通过 ToolOptionsPanel 实现快捷全选、复制、粘贴、剪切
+
+通过 SymbolTablePanel 实现符号快速插入
 
 ## 样式
 
@@ -47,12 +55,6 @@
 都在 BaseLexer 中定义
 
 ## 后续
-
-增加 Parser 以实现更深层次的语法解析和自动补全
-
-增加 Redo & Undo 以实现撤销和回退
-
-增加 ToolOptionsPanel 实现快捷全选、复制、粘贴
 
 增加 CursorFlickerEffect 实现光标闪烁
 

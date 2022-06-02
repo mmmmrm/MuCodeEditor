@@ -30,10 +30,13 @@
 package com.mucheng.editor.event
 
 import android.view.KeyEvent
+import com.mucheng.editor.colorful.LexInterface
 
 interface TextInputConnection {
 
-    fun onCommit(text: CharSequence)
+    fun getLexCoroutine(): LexInterface
+
+    fun onCommit(text: CharSequence, showAutoCompletionPanel: Boolean)
 
     fun onDelete()
 

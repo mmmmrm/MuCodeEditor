@@ -49,41 +49,8 @@ class EventHandler(private val editor: MuCodeEditor) : GestureDetector.OnGesture
 
     private val scroller by lazy { editor.getScroller() }
 
-    fun getEditorMaxScrollX() = run {
-        val x = editor.getMaxScrollX()
-        if (x > editor.width) {
-            x
-        } else {
-            0
-        }
-    }
-
-    fun getEditorMaxScrollY() = run {
-        val y = editor.getMaxScrollY()
-        if (y > editor.height) {
-            y - editor.height / 2
-        } else {
-            0
-        }
-    }
-
     private var isTouchingFirstHandleDrop = false
     private var isTouchingSecondHandleDrop = false
-
-    fun scrollBy(distanceX: Float, distanceY: Float, useAnimation: Boolean = false) {
-        var endX = scroller.currX + distanceX.toInt()
-        var endY = scroller.currY + distanceY.toInt()
-        endX = max(endX, 0)
-        endY = max(endY, 0)
-        endY = min(endY, getEditorMaxScrollY())
-        endX = min(endX, getEditorMaxScrollX())
-
-        scroller.startScroll(scroller.currX,
-            scroller.currY,
-            endX - scroller.currX,
-            endY - scroller.currY, if (useAnimation) 300 else 0)
-        editor.invalidate()
-    }
 
     override fun onDown(e: MotionEvent): Boolean {
         isTouchingFirstHandleDrop = false
@@ -263,6 +230,41 @@ class EventHandler(private val editor: MuCodeEditor) : GestureDetector.OnGesture
                 editor.getController().state.selection
     }
 
+    fun scrollTo(targetX: Float, targetY: Float, useAnimation: Boolean) {
+        var distanceX = 0f
+        var distanceY = 0f
+
+        if (targetX > scroller.currX || targetX < scroller.currX) {
+            distanceX = targetX - scroller.currX
+        }
+
+        if (targetY > scroller.currX || targetY < scroller.currY) {
+            distanceY = targetY - scroller.currY
+        }
+
+        scrollBy(distanceX, distanceY, useAnimation)
+    }
+
+    fun scrollBy(distanceX: Float, distanceY: Float, useAnimation: Boolean) {
+        var endX = scroller.currX + distanceX
+        var endY = scroller.currY + distanceY
+
+        endX = max(0f, endX)
+        endY = max(0f, endY)
+        endX = min(editor.getMaxScrollX().toFloat(), endX)
+
+        endY = min(editor.getMaxScrollY().toFloat(), endY)
+
+        scroller.startScroll(
+            scroller.currX,
+            scroller.currY,
+            (endX - scroller.currX).toInt(),
+            (endY - scroller.currY).toInt(),
+            if (useAnimation) 200 else 0
+        )
+        editor.postInvalidate()
+    }
+
     override fun onScroll(
         e1: MotionEvent,
         e2: MotionEvent,
@@ -280,20 +282,22 @@ class EventHandler(private val editor: MuCodeEditor) : GestureDetector.OnGesture
          * 算法：平滑滑动算法
          * 先计算偏移，再调用 View.scrollTo(x, y)
          * */
+
+        val maxScrollX = editor.getMaxScrollX()
+        val maxScrollY = editor.getMaxScrollY()
         val scrolledX = scroller.currX
         val scrolledY = scroller.currY
 
         var offsetX = 0f
         var offsetY = 0f
 
-        if (scrolledX + distanceX < getEditorMaxScrollX() && scrolledX + distanceX > 0) {
+        if (scrolledX + distanceX < maxScrollX && scrolledX + distanceX > 0) {
             offsetX += distanceX
         }
 
-        if (scrolledY + distanceY < getEditorMaxScrollY() && scrolledY + distanceY > 0) {
+        if (scrolledY + distanceY < maxScrollY && scrolledY + distanceY > 0) {
             offsetY += distanceY
         }
-
         scroller.startScroll(
             scrolledX,
             scrolledY,
@@ -311,17 +315,20 @@ class EventHandler(private val editor: MuCodeEditor) : GestureDetector.OnGesture
         velocityX: Float,
         velocityY: Float,
     ): Boolean {
+        val maxScrollX = editor.getMaxScrollX()
+        val maxScrollY = editor.getMaxScrollY()
+
         scroller.fling(
             scroller.currX,
             scroller.currY,
             (-velocityX).toInt(),
             (-velocityY).toInt(),
             0,
-            getEditorMaxScrollX(),
+            maxScrollX,
             0,
-            getEditorMaxScrollY()
+            maxScrollY
         )
-        editor.invalidate()
+        editor.postInvalidate()
         return false
     }
 
@@ -491,7 +498,7 @@ class EventHandler(private val editor: MuCodeEditor) : GestureDetector.OnGesture
                         this.column = column
                         this.row = row
                     }
-                    scrollBy(0f, -getLineHeight(editor.getPaints().lineNumberPaint).toFloat())
+                    scrollBy(0f, -getLineHeight(editor.getPaints().lineNumberPaint).toFloat(), false)
                     editor.post(this)
                     return
                 }
@@ -501,7 +508,7 @@ class EventHandler(private val editor: MuCodeEditor) : GestureDetector.OnGesture
                         this.column = column
                         this.row = row
                     }
-                    scrollBy(0f, getLineHeight(editor.getPaints().lineNumberPaint).toFloat())
+                    scrollBy(0f, getLineHeight(editor.getPaints().lineNumberPaint).toFloat(), false)
                     editor.post(this)
                     return
                 }
@@ -511,7 +518,7 @@ class EventHandler(private val editor: MuCodeEditor) : GestureDetector.OnGesture
                         this.column = column
                         this.row = row
                     }
-                    scrollBy(0f, -getLineHeight(editor.getPaints().lineNumberPaint).toFloat())
+                    scrollBy(0f, -getLineHeight(editor.getPaints().lineNumberPaint).toFloat(), false)
                     editor.post(this)
                     return
                 }
@@ -521,7 +528,7 @@ class EventHandler(private val editor: MuCodeEditor) : GestureDetector.OnGesture
                         this.column = column
                         this.row = row
                     }
-                    scrollBy(0f, getLineHeight(editor.getPaints().lineNumberPaint).toFloat())
+                    scrollBy(0f, getLineHeight(editor.getPaints().lineNumberPaint).toFloat(), false)
                     editor.post(this)
                     return
                 }

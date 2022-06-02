@@ -29,9 +29,12 @@
 
 package com.mucheng.editor.impl
 
+import android.util.Log
 import android.view.KeyEvent
 import com.mucheng.editor.component.Cursor
+import com.mucheng.editor.enums.EditorAction
 import com.mucheng.editor.event.TextInputConnection
+import com.mucheng.editor.position.ColumnRowPosition
 import com.mucheng.editor.position.RangePosition
 import com.mucheng.editor.text.ContentProvider
 import com.mucheng.editor.text.LineContent
@@ -40,9 +43,13 @@ import com.mucheng.editor.views.MuCodeEditor
 
 class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputConnection {
 
-    private val lexCoroutine by lazy { editor.getLexCoroutine() }
+    private val mLexCoroutine by lazy { editor.getLexCoroutine() }
 
-    override fun onCommit(text: CharSequence) {
+    override fun getLexCoroutine(): DefaultLexCoroutine {
+        return mLexCoroutine
+    }
+
+    override fun onCommit(text: CharSequence, showAutoCompletionPanel: Boolean) {
         val contentProvider = editor.getContentProvider()
         val cursor = contentProvider.getCursor()
         val cursorAnimation = editor.getController().style.cursorAnimation
@@ -50,18 +57,24 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
         if (text.indexOf('\n') != -1 && text.length > 1) {
             val lineContents = text.split('\n')
             execCursorAnimationIfNeeded(cursorAnimation, editor) {
+                val end = lineContents.size - 1
+
                 lineContents.forEachIndexed { index, it ->
                     onCommitInternal(it, contentProvider, cursor)
-                    if (index != lineContents.size - 1) {
+
+                    if (index != end) {
                         onCommitInternal("\n", contentProvider, cursor)
                     }
                 }
+
                 editor.getController().state.lex(
-                    lexCoroutine
+                    mLexCoroutine
                 )
             }
-            editor.showCodeAutoCompletionPanel()
-            editor.scrollToColumn(cursor.column)
+            if (showAutoCompletionPanel) {
+                editor.showCodeAutoCompletionPanel()
+            }
+            editor.scrollToColumn(cursor.column, cursor.row)
             return
         }
 
@@ -69,11 +82,13 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
             onCommitInternal(text, contentProvider, cursor)
             // 更新高亮
             editor.getController().state.lex(
-                lexCoroutine
+                mLexCoroutine
             )
         }
-        editor.showCodeAutoCompletionPanel()
-        editor.scrollToColumn(cursor.column)
+        if (showAutoCompletionPanel) {
+            editor.showCodeAutoCompletionPanel()
+        }
+        editor.scrollToColumn(cursor.column, cursor.row)
     }
 
     private fun onCommitInternal(
@@ -81,12 +96,18 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
         contentProvider: ContentProvider,
         cursor: Cursor,
     ) {
+        val actionController = editor.getController().action
         val cursorColumn = cursor.column
         val cursorRow = cursor.row
         val lineContent = contentProvider.getLineContent(cursorColumn)
         val contentSize = lineContent.length
 
         if (charSequence == "\n" && cursorRow == contentSize) {
+            actionController.push(EditorAction.CommitAction(
+                ColumnRowPosition(cursorColumn, cursorRow),
+                ColumnRowPosition(cursorColumn + 1, 0),
+                StringBuilder("\n")
+            ))
             ++cursor.column
             cursor.row = 0
             contentProvider.insertLineContent(cursor.column, LineContent(""))
@@ -94,6 +115,11 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
         }
 
         if (charSequence == "\n" && cursorRow < contentSize) {
+            actionController.push(EditorAction.CommitAction(
+                ColumnRowPosition(cursorColumn, cursorRow),
+                ColumnRowPosition(cursorColumn + 1, 0),
+                StringBuilder("\n")
+            ))
             val subText = lineContent.substring(cursorRow, contentSize)
             lineContent.delete(cursorRow, contentSize)
             ++cursor.column
@@ -105,23 +131,43 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
         if (cursorRow == 0 && contentSize > 0) {
             lineContent.insert(cursorRow, charSequence)
             cursor.row += charSequence.length
+            actionController.push(EditorAction.CommitAction(
+                ColumnRowPosition(cursorColumn, cursorRow),
+                ColumnRowPosition(cursorColumn, cursor.row),
+                StringBuilder(charSequence)
+            ))
             return
         }
 
         if (cursorRow == 0 && contentSize == 0) {
             lineContent.append(charSequence)
             cursor.row += charSequence.length
+            actionController.push(EditorAction.CommitAction(
+                ColumnRowPosition(cursorColumn, cursorRow),
+                ColumnRowPosition(cursorColumn, cursor.row),
+                StringBuilder(charSequence)
+            ))
             return
         }
 
         if (cursorRow < contentSize) {
             lineContent.insert(cursorRow, charSequence)
             cursor.row += charSequence.length
+            actionController.push(EditorAction.CommitAction(
+                ColumnRowPosition(cursorColumn, cursorRow),
+                ColumnRowPosition(cursorColumn, cursor.row),
+                StringBuilder(charSequence)
+            ))
             return
         }
 
         lineContent.append(charSequence)
         cursor.row += charSequence.length
+        actionController.push(EditorAction.CommitAction(
+            ColumnRowPosition(cursorColumn, cursorRow),
+            ColumnRowPosition(cursorColumn, cursor.row),
+            StringBuilder(charSequence)
+        ))
     }
 
     override fun onDelete() {
@@ -132,10 +178,10 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
         execCursorAnimationIfNeeded(cursorAnimation, editor) {
             onDeleteInternal(contentProvider, cursor)
             // 更新高亮
-            editor.getController().state.lex(lexCoroutine)
+            editor.getController().state.lex(mLexCoroutine)
         }
         editor.dismissCodeAutoCompletionPanel()
-        editor.scrollToColumn(cursor.column)
+        editor.scrollToColumn(cursor.column, cursor.row)
     }
 
     override fun onSelectionTextReplace(text: CharSequence) {
@@ -148,11 +194,11 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
             onSelectionTextReplaceInternal(text,
                 selectionRange!!,
                 cursor)
-            editor.getController().state.lex(lexCoroutine)
+            editor.getController().state.lex(mLexCoroutine)
             stateController.unselectText()
         }
         editor.dismissCodeAutoCompletionPanel()
-        editor.scrollToColumn(cursor.column)
+        editor.scrollToColumn(cursor.column, cursor.row)
     }
 
     private fun onSelectionTextReplaceInternal(
@@ -160,6 +206,7 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
         selectionRange: RangePosition,
         cursor: Cursor,
     ) {
+        val actionController = editor.getController().action
         val startPos = selectionRange.startPosition
         val endPos = selectionRange.endPosition
         val startColumn = startPos.column
@@ -168,15 +215,33 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
 
         if (startColumn == endColumn && text.indexOf('\n') == -1) {
             val lineContent = editor.getContentProvider().getLineContent(startColumn)
+            val delText = lineContent.subSequence(startPos.row, endPos.row)
             lineContent.delete(startPos.row, endPos.row)
             lineContent.insert(startPos.row, text)
             cursor.row = startPos.row + text.length
+            actionController.push(
+                EditorAction.DeleteAction(
+                    ColumnRowPosition(startColumn, startPos.row),
+                    ColumnRowPosition(startColumn, endPos.row),
+                    StringBuilder(delText)
+                )
+            )
             return
         }
 
         if (startColumn == endColumn && text.indexOf('\n') != -1) {
             val lineContent = editor.getContentProvider().getLineContent(startColumn)
+            val delText = lineContent.subSequence(startPos.row, endPos.row)
             lineContent.delete(startPos.row, endPos.row)
+
+            actionController.push(
+                EditorAction.DeleteAction(
+                    ColumnRowPosition(startColumn, startPos.row),
+                    ColumnRowPosition(startColumn, endPos.row),
+                    StringBuilder(delText)
+                )
+            )
+
             cursor.row = startPos.row
             val lineContents = text.split('\n')
             lineContents.forEachIndexed { index, it ->
@@ -188,7 +253,7 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
             return
         }
 
-        onSelectionTextDeleteInternal(selectionRange, cursor)
+        onSelectionTextDeleteInternal(selectionRange)
         val lineContents = text.split('\n')
         lineContents.forEachIndexed { index, it ->
             onCommitInternal(it, contentProvider, cursor)
@@ -206,56 +271,39 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
         val selectionRange = stateController.selectionRange
         val cursor = editor.getContentProvider().getCursor()
         execCursorAnimationIfNeeded(styleController.cursorAnimation, editor) {
-            onSelectionTextDeleteInternal(selectionRange!!, cursor)
-            editor.getController().state.lex(lexCoroutine)
+            onSelectionTextDeleteInternal(selectionRange!!)
+            editor.getController().state.lex(mLexCoroutine)
             stateController.unselectText()
         }
         editor.dismissCodeAutoCompletionPanel()
-        editor.scrollToColumn(cursor.column)
+        editor.scrollToColumn(cursor.column, cursor.row)
     }
 
-    private fun onSelectionTextDeleteInternal(selectionRange: RangePosition, cursor: Cursor) {
+    private fun onSelectionTextDeleteInternal(selectionRange: RangePosition) {
+        val actionController = editor.getController().action
         val contentProvider = editor.getContentProvider()
         val startPos = selectionRange.startPosition
         val endPos = selectionRange.endPosition
-        val startColumn = startPos.column
-        val endColumn = endPos.column
 
-        if (startColumn == endColumn) {
-            val lineContent = contentProvider.getLineContent(startColumn)
-            lineContent.delete(startPos.row, endPos.row)
-            cursor.row = startPos.row
-            return
-        }
+        val start = startPos.toColumnRowPosition()
+        val end = endPos.toColumnRowPosition()
+        val delText = StringBuilder(contentProvider.subText(selectionRange))
 
-        val startLineContent = contentProvider.getLineContent(startColumn)
-        val endLineContent = contentProvider.getLineContent(endColumn)
-
-        startLineContent.delete(startPos.row, startLineContent.length)
-
-        if (startColumn + 1 == endColumn) {
-            endLineContent.delete(0, endPos.row)
-            contentProvider.remove(endLineContent)
-            startLineContent.append(endLineContent)
-
-            cursor.column = startPos.column
-            cursor.row = startPos.row
-            return
-        }
-
-        contentProvider.removeRangeLineContent(startColumn + 1, endColumn)
-        endLineContent.delete(0, endPos.row)
-        contentProvider.remove(endLineContent)
-        startLineContent.append(endLineContent)
-
-        cursor.column = startPos.column
-        cursor.row = startPos.row
+        contentProvider.delete(start, end)
+        actionController.push(
+            EditorAction.DeleteAction(
+                start,
+                end,
+                delText
+            )
+        )
     }
 
     private fun onDeleteInternal(
         contentProvider: ContentProvider,
         cursor: Cursor,
     ) {
+        val action = editor.getController().action
         val cursorColumn = cursor.column
         val cursorRow = cursor.row
         val lineContent = contentProvider.getLineContent(cursorColumn)
@@ -264,7 +312,15 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
             contentProvider.remove(lineContent)
             --cursor.column
             cursor.row = contentProvider.getColumnRowCount(cursor.column)
-            contentProvider.getLineContent(cursor.column).append(lineContent)
+            val lastLineColumnRowPosition = contentProvider.getLineContent(cursor.column)
+            lastLineColumnRowPosition.append(lineContent)
+            action.push(
+                EditorAction.DeleteAction(
+                    ColumnRowPosition(cursor.column, lastLineColumnRowPosition.length),
+                    ColumnRowPosition(cursor.column, lastLineColumnRowPosition.length),
+                    StringBuilder("\n")
+                )
+            )
             return
         }
 
@@ -273,7 +329,15 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
         }
 
         --cursor.row
+        val delText = lineContent[cursor.row]
         lineContent.deleteCharAt(cursor.row)
+        action.push(
+            EditorAction.DeleteAction(
+                ColumnRowPosition(cursorColumn, cursor.row),
+                ColumnRowPosition(cursorColumn, cursor.row + 1),
+                StringBuilder(delText.toString())
+            )
+        )
     }
 
     override fun toCursorLeft() {
@@ -282,7 +346,7 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
         execCursorAnimationIfNeeded(cursorAnimation, editor) {
             toCursorLeftInternal()
         }
-        editor.scrollToColumn(cursor.column)
+        editor.scrollToColumn(cursor.column, cursor.row)
     }
 
     private fun toCursorLeftInternal() {
@@ -310,7 +374,7 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
         execCursorAnimationIfNeeded(cursorAnimation, editor) {
             toCursorRightInternal()
         }
-        editor.scrollToColumn(cursor.column)
+        editor.scrollToColumn(cursor.column, cursor.row)
     }
 
     override fun toCursorTop() {
@@ -319,7 +383,7 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
         execCursorAnimationIfNeeded(cursorAnimation, editor) {
             toCursorTopInternal()
         }
-        editor.scrollToColumn(cursor.column)
+        editor.scrollToColumn(cursor.column, cursor.row)
     }
 
     private fun toCursorTopInternal() {
@@ -356,7 +420,7 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
         execCursorAnimationIfNeeded(cursorAnimation, editor) {
             toCursorBottomInternal()
         }
-        editor.scrollToColumn(cursor.column)
+        editor.scrollToColumn(cursor.column, cursor.row)
     }
 
     private fun toCursorBottomInternal() {
@@ -437,12 +501,12 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
         }
 
         if (keyCode == KeyEvent.KEYCODE_SPACE) {
-            onCommit(" ")
+            onCommit(" ", false)
             return
         }
 
         if (event.isPrintingKey && !editor.getController().state.selection) {
-            onCommit(String(bytes = byteArrayOf(event.unicodeChar.toByte())))
+            onCommit(String(bytes = byteArrayOf(event.unicodeChar.toByte())), true)
             return
         }
 

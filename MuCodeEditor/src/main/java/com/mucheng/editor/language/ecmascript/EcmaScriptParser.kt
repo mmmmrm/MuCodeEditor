@@ -82,7 +82,7 @@ open class EcmaScriptParser : BaseParser<EcmaScriptToken>() {
             token == EcmaScriptToken.IDENTIFIER &&
             findOffsetToken(1) == EcmaScriptToken.EQUALS &&
             findOffsetToken(2) != null &&
-            findOffsetToken(2)?.getColorType() != CodeEditorColorToken.SYMBOL_COLOR
+            findOffsetToken(2) != EcmaScriptToken.SEMICOLON
         ) {
             addNeededToken(BaseAutoCompleteHelper.VARIABLE, token, range.first, range.second)
         }

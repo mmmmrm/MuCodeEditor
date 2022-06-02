@@ -14,6 +14,12 @@ fun isInitUnitContext(): Boolean {
     return ::mContext.isInitialized
 }
 
+fun getDp(context: Context, dp: Number): Int {
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+        dp.toFloat(),
+        context.resources.displayMetrics).toInt()
+}
+
 object UnitUtil {
 
     private val cacheDp: MutableMap<Number, Float> = HashMap()

@@ -32,6 +32,7 @@ package com.mucheng.editor.handler
 import android.view.KeyEvent
 import android.view.inputmethod.BaseInputConnection
 import com.mucheng.editor.annotation.UnsupportedUserUsage
+import com.mucheng.editor.colorful.LexInterface
 import com.mucheng.editor.event.TextInputConnection
 import com.mucheng.editor.views.MuCodeEditor
 
@@ -44,10 +45,18 @@ open class TextInputConnectionDelegation(
     private val controller by lazy { view.getController() }
 
     override fun commitText(text: CharSequence, newCursorPosition: Int): Boolean {
+        return commitText(text, newCursorPosition, true)
+    }
+
+    fun commitText(
+        text: CharSequence,
+        newCursorPosition: Int,
+        showAutoCompletionPanel: Boolean = true,
+    ): Boolean {
         if (controller.state.selection) {
             inputConnection.onSelectionTextReplace(text)
         } else {
-            inputConnection.onCommit(text)
+            inputConnection.onCommit(text, showAutoCompletionPanel)
         }
         return super.commitText(text, newCursorPosition)
     }
@@ -100,6 +109,10 @@ open class TextInputConnectionDelegation(
     override fun closeConnection() {
         super.closeConnection()
         inputConnection.closeConnection()
+    }
+
+    fun getLexCoroutine(): LexInterface {
+        return inputConnection.getLexCoroutine()
     }
 
 }

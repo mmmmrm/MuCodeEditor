@@ -156,12 +156,8 @@ abstract class BaseAutoCompletionPanel(
             }
 
             val nextCommit = item.name.replace(text, "")
-            controller.setEnabledAutoCompletion(false)
-
-            inputConnection.commitText(nextCommit, 0)
+            inputConnection.commitText(nextCommit, 0, false)
             dismiss()
-
-            controller.setEnabledAutoCompletion(true)
         }
 
     }

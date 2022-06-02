@@ -154,10 +154,12 @@ class EditorPainter(
 
         var workColumn = startLine
 
+        paddingLeft += SPACE_LEFT * 2
+
         do {
             canvas.drawText(
                 workColumn.toString(),
-                SPACE_LEFT,
+                paddingLeft,
                 getColumnY(paints.lineNumberPaint, workColumn).toFloat(),
                 paints.lineNumberPaint
             )
@@ -510,6 +512,7 @@ class EditorPainter(
     }
 
     fun getMaxHeight(): Int {
+
         return getColumnY(paints.lineNumberPaint, contentProvider.columnCount)
     }
 

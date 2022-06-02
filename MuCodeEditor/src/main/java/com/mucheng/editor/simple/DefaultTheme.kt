@@ -102,6 +102,19 @@ class DefaultTheme : AbstractTheme() {
 
         toPair(CodeEditorColorToken.AUTO_COMPLETE_PANEL_TYPE_COLOR,
             "#FF535353".parseColor()) putTo lightColors
+
+        toPair(CodeEditorColorToken.TOOL_OPTIONS_PANEL_BACKGROUND,
+            "#FFFFFFFF".parseColor()) putTo lightColors
+
+        toPair(CodeEditorColorToken.TOOL_OPTIONS_PANEL_ICON_COLOR,
+            "#FF8BA8FF".parseColor()) putTo lightColors
+
+        toPair(CodeEditorColorToken.TOOL_OPTIONS_PANEL_TEXT_COLOR,
+            "#FF202331".parseColor()) putTo lightColors
+
+        toPair(CodeEditorColorToken.SYMBOL_TABLE_PANEL_BACKGROUND, "#FFFFFFFF".parseColor()) putTo lightColors
+
+        toPair(CodeEditorColorToken.SYMBOL_TABLE_TEXT_COLOR, "#FF202331".parseColor()) putTo lightColors
     }
 
     // 添加深色
@@ -163,6 +176,20 @@ class DefaultTheme : AbstractTheme() {
         toPair(CodeEditorColorToken.AUTO_COMPLETE_PANEL_TYPE_COLOR,
             "#FF676E95".parseColor()) putTo darkColors
 
+        toPair(CodeEditorColorToken.TOOL_OPTIONS_PANEL_BACKGROUND,
+            "#FF444267".parseColor()) putTo darkColors
+
+        toPair(CodeEditorColorToken.TOOL_OPTIONS_PANEL_ICON_COLOR,
+            "#FF8BA8FF".parseColor()) putTo darkColors
+
+        toPair(CodeEditorColorToken.TOOL_OPTIONS_PANEL_TEXT_COLOR,
+            "#FFA4ABCC".parseColor()) putTo darkColors
+
+        toPair(CodeEditorColorToken.SYMBOL_TABLE_PANEL_BACKGROUND,
+            "#FF444267".parseColor()) putTo darkColors
+
+        toPair(CodeEditorColorToken.SYMBOL_TABLE_TEXT_COLOR,
+            "#FFA4ABCC".parseColor()) putTo darkColors
     }
 
 }

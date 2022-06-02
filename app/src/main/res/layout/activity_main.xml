@@ -13,7 +13,9 @@
         android:layout_height="wrap_content"
         android:background="#FF1E1E1E"
         app:title="MuCodeEditor"
-        app:titleTextColor="#FFFFFFFF" />
+        app:titleTextColor="#FFFFFFFF"
+        app:navigationIconTint="@color/white"
+        app:popupTheme="@style/ThemeOverlay.MaterialComponents.Dark"/>
 
     <com.mucheng.editor.views.MuCodeEditor
         android:id="@+id/editor"

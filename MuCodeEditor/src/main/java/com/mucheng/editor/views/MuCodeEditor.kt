@@ -1,15 +1,13 @@
 package com.mucheng.editor.views
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
-import android.view.GestureDetector
-import android.view.KeyEvent
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
@@ -17,9 +15,9 @@ import android.widget.OverScroller
 import com.mucheng.editor.annotation.Suspend
 import com.mucheng.editor.annotation.UnsupportedUserUsage
 import com.mucheng.editor.base.ColumnRowIndexer
-import com.mucheng.editor.handler.TextInputConnectionDelegation
 import com.mucheng.editor.controller.EditorController
 import com.mucheng.editor.event.EventHandler
+import com.mucheng.editor.handler.TextInputConnectionDelegation
 import com.mucheng.editor.impl.DefaultLexCoroutine
 import com.mucheng.editor.impl.DefaultTextInputConnection
 import com.mucheng.editor.indexer.CacheColumnRowIndexer
@@ -29,6 +27,7 @@ import com.mucheng.editor.position.RangePosition
 import com.mucheng.editor.provider.SpanProvider
 import com.mucheng.editor.text.ContentProvider
 import com.mucheng.editor.util.execCursorAnimationNow
+import com.mucheng.editor.util.getColumnY
 import com.mucheng.editor.util.getLineHeight
 import com.mucheng.editor.util.initUnitContext
 import kotlinx.coroutines.Dispatchers
@@ -42,7 +41,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-@Suppress("LeakingThis", "unused", "MemberVisibilityCanBePrivate")
+@Suppress("LeakingThis", "unused", "MemberVisibilityCanBePrivate", "DEPRECATION")
 open class MuCodeEditor @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
 ) : View(context, attrs, defStyleAttr) {
@@ -83,11 +82,16 @@ open class MuCodeEditor @JvmOverloads constructor(
         //初始化 UnitUtil
         initUnitContext(context)
 
+        if (context is Activity) {
+            context.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        }
+
         //初始化绘制器
         mPainter = EditorPainter(this, mContentProvider)
         //推送代码控制器
 
         mPaints = EditorPaints()
+        mController.symbolTablePanel?.show()
     }
 
     fun setText(text: String) {
@@ -110,10 +114,18 @@ open class MuCodeEditor @JvmOverloads constructor(
         return coroutineScope {
             return@coroutineScope withContext(Dispatchers.IO) {
                 val result = runCatching {
-                    val bufferedReader = inputStream.bufferedReader()
-                    bufferedReader.useLines { lineTexts ->
-                        lineTexts.forEach {
-                            mContentProvider.addColumnContent(it)
+                    val byteArrayOutputStream = ByteArrayOutputStream()
+                    val bufferedReader = inputStream.buffered()
+                    byteArrayOutputStream.use {
+                        bufferedReader.use {
+                            val buffer = ByteArray(1024)
+                            var flag: Int
+                            while (bufferedReader.read(buffer).also { flag = it } != -1) {
+                                byteArrayOutputStream.write(buffer, 0, flag)
+                                byteArrayOutputStream.flush()
+                            }
+                            val text = String(byteArrayOutputStream.toByteArray())
+                            setText(text)
                         }
                     }
                 }
@@ -308,7 +320,7 @@ open class MuCodeEditor @JvmOverloads constructor(
         return super.onKeyDown(keyCode, event)
     }
 
-    private fun getClipboardText(): String {
+    open fun getClipboardText(): String {
         val clipboardManager =
             context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = clipboardManager.primaryClip
@@ -318,6 +330,10 @@ open class MuCodeEditor @JvmOverloads constructor(
         }
 
         return ""
+    }
+
+    open fun insert(text: String) {
+        mInputConnection.commitText(text, 0, false)
     }
 
     open fun copySelectionText() {
@@ -364,42 +380,60 @@ open class MuCodeEditor @JvmOverloads constructor(
         scrollToColumn(mContentProvider.columnCount)
     }
 
-    open fun scrollToColumn(column: Int) {
-        val startVisibleColumn = min(mContentProvider.columnCount, getStartVisibleLine() + 1)
-        val endVisibleColumn = max(1, getEndVisibleLine() - 1)
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        val cursor = mContentProvider.getCursor()
+        val selectionColumn = cursor.column
+        val selectionRow = cursor.row
+        val offsetY = getColumnY(mPaints.lineNumberPaint, selectionColumn)
 
-        if (startVisibleColumn == endVisibleColumn) {
-            return
+        mEventHandler.scrollBy(
+            (if (mScroller.currX > getMaxScrollX()) getMaxScrollX() - mScroller.currX else 0).toFloat(),
+            (if (mScroller.currY > getMaxScrollY()) getMaxScrollY() - mScroller.currY else 0).toFloat(),
+            true
+        )
+
+        if (offsetY > height) {
+            scrollToColumn(selectionColumn, selectionRow)
         }
 
+        mController.symbolTablePanel?.updateSize()
+        mController.toolOptionsPanel.updateSize()
+    }
+
+    open fun scrollToColumn(column: Int, row: Int = -1) {
+        val startVisibleColumn = min(getStartVisibleLine() + 1, mContentProvider.columnCount)
+        val endVisibleColumn = max(getEndVisibleLine() - 1, 1)
+
+        var targetX = mScroller.currX.toFloat()
+        var targetY = mScroller.currY.toFloat()
+        val lineContent = mContentProvider.getLineContent(column)
+
         if (column == 1) {
-            val offsetY = -mScroller.currY.toFloat()
-            mEventHandler.scrollBy(0f, offsetY, false)
-            return
+            targetY = 0f
         }
 
         if (column == mContentProvider.columnCount) {
-            val offsetY = mEventHandler.getEditorMaxScrollY() - mScroller.currY
-            mEventHandler.scrollBy(0f, offsetY.toFloat(), false)
-            return
+            targetY = getColumnY(mPaints.lineNumberPaint, column).toFloat()
         }
 
-        if (column in startVisibleColumn..endVisibleColumn) {
-            return
+        if (startVisibleColumn != endVisibleColumn && column !in startVisibleColumn..endVisibleColumn) {
+            targetY = getColumnY(mPaints.lineNumberPaint, column).toFloat()
         }
 
-        if (column < startVisibleColumn) {
-            val offsetY = (column - startVisibleColumn) * getLineHeight(mPaints.lineNumberPaint)
-            mEventHandler.scrollBy(0f, offsetY.toFloat(), true)
-            return
+        if (row == 0) {
+            targetX = 0f
         }
 
-        if (column > endVisibleColumn) {
-            val offsetY = (column - endVisibleColumn) * getLineHeight(mPaints.lineNumberPaint)
-            mEventHandler.scrollBy(0f, offsetY.toFloat(), true)
-            return
+        if (row > 0) {
+            val offset =
+                mPainter.getPaddingLeft() + mPaints.codeTextPaint.measureText(lineContent, 0, row)
+            if (offset > width) {
+                targetX = offset
+            }
         }
 
+        mEventHandler.scrollTo(targetX, targetY, true)
     }
 
     // 弹出软键盘
@@ -419,7 +453,7 @@ open class MuCodeEditor @JvmOverloads constructor(
 
         val lineContent = mContentProvider.getLineContent(column)
 
-        if (x >= getMaxScrollX()) {
+        if (x >= mPainter.getMaxWidth()) {
             return lineContent.length
         }
 
@@ -452,12 +486,21 @@ open class MuCodeEditor @JvmOverloads constructor(
 
     //代码编辑器的最大 x 坐标（相当于滑动的最大宽）
     open fun getMaxScrollX(): Int {
-        return mPainter.getMaxWidth()
+        val maxPaintWidth = mPainter.getMaxWidth()
+        return max(0, maxPaintWidth - width / 2)
     }
 
     //代码编辑器的最大 y 坐标（相当于滑动的最大高）
     open fun getMaxScrollY(): Int {
-        return mPainter.getMaxHeight()
+        val maxPaintHeight = mPainter.getMaxHeight()
+        var maxHeight = maxPaintHeight
+        val symbolHeight = mController.symbolTablePanel?.height ?: 0
+        if (maxPaintHeight > height - symbolHeight) {
+            maxHeight -= height / 2
+        } else {
+            maxHeight = 0
+        }
+        return maxHeight
     }
 
     // 显示可见的起始行，这玩意真的特别节省性能

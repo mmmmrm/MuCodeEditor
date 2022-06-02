@@ -55,37 +55,30 @@ open class DefaultLexCoroutine(private val editor: MuCodeEditor) : LexInterface 
         spanProvider.clear()
 
         val lexer = controller.language.getLexer()!!
-        try {
-            lexer.clearAll()
-            lexer.setSources(contentProvider.getLineContents())
-            lexer.analyze()
+        lexer.clearAll()
+        lexer.setSources(contentProvider.getLineContents().toList())
+        lexer.analyze()
 
-            val tokens = lexer.getTokens().toList()
-            val map = hashMapOf<Int, OpenArrayList<Pair<BaseToken, IntRange>>>()
+        val tokens = lexer.getTokens().toList()
+        val map = hashMapOf<Int, OpenArrayList<Pair<BaseToken, IntRange>>>()
+        lexer.clearAll()
 
-            var workColumn = 1
-            while (workColumn <= contentProvider.columnCount) {
-                map[workColumn] = OpenArrayList()
-                ++workColumn
-            }
-
-            tokens.forEach {
-                map[it.second.first.column]!!.add(it.first to it.second.first.row..it.second.second.row)
-            }
-
-            map.keys.forEach {
-                val value = map[it]!!
-                spanProvider.addColumnSpan(it, value)
-            }
-
-            setParseTokens(tokens)
-        } catch (e: CancellationException) {
-            spanProvider.clear()
-        } catch (e: IndexOutOfBoundsException) {
-            spanProvider.clear()
-        } finally {
-            lexer.clearAll()
+        var workColumn = 1
+        while (workColumn <= contentProvider.columnCount) {
+            map[workColumn] = OpenArrayList()
+            ++workColumn
         }
+
+        tokens.forEach {
+            map[it.second.first.column]!!.add(it.first to it.second.first.row..it.second.second.row)
+        }
+
+        map.keys.forEach {
+            val value = map[it]!!
+            spanProvider.addColumnSpan(it, value)
+        }
+
+        setParseTokens(tokens)
 
         stateController.lexCompletion()
     }
