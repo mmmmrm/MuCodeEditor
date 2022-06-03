@@ -55,9 +55,11 @@ class HtmlLanguage(controller: EditorController) : BaseLanguage(controller) {
     }
 
     private fun createAutoCompleteItem(): MutableList<AutoCompleteItem> {
-        val list = mutableListOf<AutoCompleteItem>()
-        list.add(AutoCompleteItem("div", HtmlAutoCompleteHelper.ELEMENT, "<div></div>"))
-        list.add(AutoCompleteItem("class", HtmlAutoCompleteHelper.ATTRIBUTE, "class=\"\""))
+        val list: MutableList<AutoCompleteItem> = ArrayList()
+
+        list.add(AutoCompleteItem("DOCTYPE", HtmlAutoCompleteHelper.ELEMENT, "<!DOCTYPE html>"))
+
+
         return list
     }
 

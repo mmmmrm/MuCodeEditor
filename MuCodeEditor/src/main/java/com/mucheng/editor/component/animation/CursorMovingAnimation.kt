@@ -40,6 +40,7 @@ class CursorMovingAnimation(private val editor: MuCodeEditor) : CursorAnimation,
 
     private var animating = false
 
+
     private var animateXAnimator = ValueAnimator().apply {
         addUpdateListener(this@CursorMovingAnimation)
         addListener(this@CursorMovingAnimation)
@@ -125,6 +126,10 @@ class CursorMovingAnimation(private val editor: MuCodeEditor) : CursorAnimation,
         return animating
     }
 
+    override fun reset(): CursorMovingAnimation {
+        return CursorMovingAnimation(editor)
+    }
+
     override fun onAnimationUpdate(animation: ValueAnimator?) {
         editor.postInvalidateOnAnimation()
     }
@@ -137,7 +142,9 @@ class CursorMovingAnimation(private val editor: MuCodeEditor) : CursorAnimation,
         animating = false
     }
 
-    override fun onAnimationCancel(animation: Animator?) {}
+    override fun onAnimationCancel(animation: Animator?) {
+        animating = false
+    }
 
     override fun onAnimationRepeat(animation: Animator?) {}
 

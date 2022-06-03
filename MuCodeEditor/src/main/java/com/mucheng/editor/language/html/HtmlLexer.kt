@@ -75,6 +75,8 @@ class HtmlLexer : BaseLexer<HtmlToken>() {
 
             if (handleAttribute()) continue
 
+            if (handleDigit()) continue
+
             if (handleIdentifier()) continue
 
             ++row
@@ -222,6 +224,25 @@ class HtmlLexer : BaseLexer<HtmlToken>() {
         row = start
         getChar()
         return false
+    }
+
+    private fun handleDigit(): Boolean {
+        if (!isDigit()) {
+            return false
+        }
+
+        val start = row
+        while (isDigit() && isNotRowEOF()) {
+            yyChar()
+        }
+        val end = row
+
+        addToken(
+            HtmlToken.IDENTIFIER,
+            ColumnRowPosition(column, start),
+            ColumnRowPosition(column, end)
+        )
+        return true
     }
 
     private fun handleIdentifier(): Boolean {

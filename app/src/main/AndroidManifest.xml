@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.mucheng.main">
 
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -21,7 +24,7 @@
         tools:ignore="UnusedAttribute">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,7 +33,12 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".MainActivity" />
+
         <activity android:name=".CrashHandlerActivity" />
+
+        <activity android:name=".FileSelectorActivity"/>
+
     </application>
 
 </manifest>

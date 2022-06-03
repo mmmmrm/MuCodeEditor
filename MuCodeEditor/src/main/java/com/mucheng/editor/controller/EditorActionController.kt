@@ -111,4 +111,8 @@ open class EditorActionController(private val controller: EditorController) : Ba
         return controller.getEditor()
     }
 
+    fun clear() {
+        stack.clear()
+    }
+
 }

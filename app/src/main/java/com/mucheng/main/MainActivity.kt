@@ -4,9 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.system.Os.close
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import com.google.android.material.appbar.MaterialToolbar
 import com.mucheng.editor.component.animation.CursorMovingAnimation
@@ -22,14 +24,15 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
 
-        private const val REQUEST_CODE_GET_CONTENT: Int = 200
+        private const val REQUEST_SELECT_FILE: Int = 200
 
     }
 
+    private var language = "html"
     private lateinit var ecmaScriptLanguage: EcmaScriptLanguage
     private lateinit var htmlLanguage: HtmlLanguage
 
-    private lateinit var uri: Uri
+    private var path: String? = null
     private lateinit var editor: MuCodeEditor
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,9 +54,7 @@ class MainActivity : AppCompatActivity() {
             setTypefaceFromAssets(this@MainActivity, "font/HarmonyOS-Sans-Regular.ttf")
         }
 
-        CoroutineScope(Dispatchers.Main).launch {
-            addText("test/index.html", editor)
-        }
+        openHtml()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -76,22 +77,21 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.open -> {
-                val intent = Intent(Intent.ACTION_GET_CONTENT)
-                intent.type = "*/*"
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
-                intent.addCategory(Intent.CATEGORY_OPENABLE)
-                startActivityForResult(intent, REQUEST_CODE_GET_CONTENT)
+                val intent = Intent(this, FileSelectorActivity::class.java)
+                startActivityForResult(intent, REQUEST_SELECT_FILE)
             }
 
             R.id.save -> {
-                if (!::uri.isInitialized) {
+                if (this.path == null) {
+                    "你还没有打开文件".showToast()
                     return false
                 }
 
-                val path = uri.path!!
-                CoroutineScope(Dispatchers.IO).launch {
-                    editor.save(path)
-                }
+                save()
+            }
+
+            R.id.close -> {
+                close()
             }
 
             R.id.select_language_es -> {
@@ -99,9 +99,7 @@ class MainActivity : AppCompatActivity() {
                     ecmaScriptLanguage = EcmaScriptLanguage(controller)
                 }
                 controller.setLanguage(ecmaScriptLanguage)
-                CoroutineScope(Dispatchers.IO).launch {
-                    addText("test/main.js", editor)
-                }
+                openES()
             }
 
             R.id.select_language_html -> {
@@ -109,51 +107,86 @@ class MainActivity : AppCompatActivity() {
                     htmlLanguage = HtmlLanguage(controller)
                 }
                 controller.setLanguage(htmlLanguage)
-                CoroutineScope(Dispatchers.IO).launch {
-                    addText("test/index.html", editor)
-                }
+                openHtml()
             }
 
         }
         return super.onOptionsItemSelected(item)
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_GET_CONTENT) {
-            // 多选的情况
-            val clipData = data?.clipData
-            if (clipData != null && clipData.itemCount > 0) {
-                for (i in 0 until clipData.itemCount) {
-                    val item = clipData.getItemAt(i)
-                    val uri = item.uri ?: continue
-                    handleSelectedFile(uri)
-                }
-            }
-            // 单选的情况
-            uri = data?.data ?: return
-            handleSelectedFile(uri)
-        }
-    }
-
-    private fun handleSelectedFile(uri: Uri) {
-        // 获取选取返回的文件资源, 结果为 "content://" 开头的 Uri 格式的资源,
-        // Uri 格式参考: content://com.android.providers.media.documents/document/document%3A145
-
-        // 获取文件的数据, 可以使用 ContentResolver 直接打开输入流
-        val fileInputStream = contentResolver.openInputStream(uri)!!
-
+    private fun save() {
         CoroutineScope(Dispatchers.IO).launch {
-            editor.open(fileInputStream)
+            val result = editor.save(path!!)
+            if (result.isFailure) {
+                "保存失败：${result.exceptionOrNull()}".showToast()
+            } else {
+                "保存成功".showToast()
+            }
         }
     }
 
+    private fun close() {
+        save()
+        this.path = null
+        when (language) {
+            "html" -> openHtml()
+            "es" -> openES()
+        }
+    }
+
+    private fun String.showToast() {
+        runOnUiThread {
+            Toast.makeText(this@MainActivity, this, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun openES() {
+        language = "es"
+        if (path != null) {
+            return
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            addText("test/main.js", editor)
+        }
+    }
+
+    private fun openHtml() {
+        language = "html"
+        if (path != null) {
+            return
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            addText("test/index.html", editor)
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    @Deprecated("Deprecated in Java",
+        ReplaceWith("super.onActivityResult(requestCode, resultCode, data)",
+            "androidx.appcompat.app.AppCompatActivity"))
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_SELECT_FILE && resultCode == RESULT_OK) {
+            val path = data!!.getStringExtra("path")!!
+            if (this.path.equals(path)) {
+                "你已经在编辑这个文件了!".showToast()
+                return
+            }
+            this.path = path
+            CoroutineScope(Dispatchers.IO).launch {
+                editor.open(path)
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
 
     @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun addText(path: String, editor: MuCodeEditor) {
+
         withContext(Dispatchers.IO) {
-            editor.open(assets.open(path))
+            val result = editor.open(assets.open(path))
+            if (result.isFailure) {
+                "打开失败：${result.exceptionOrNull()}".showToast()
+            }
         }
     }
 

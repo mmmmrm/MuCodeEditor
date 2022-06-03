@@ -24,10 +24,15 @@
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/QuickCodeEditor/src/main/res/layout/layout_code_auto_completion_panel_item.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/drawable/ic_redo.xml" value="0.165" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/drawable/ic_undo.xml" value="0.165" />
+        <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/drawable/ic_up.xml" value="0.165" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/drawable/ic_vertical_more.xml" value="0.166" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/layout/activity_crash_handler.xml" value="0.15572916666666667" />
+        <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/layout/activity_file_selector.xml" value="0.22" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/layout/activity_splash.xml" value="0.15572916666666667" />
+        <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/layout/layout_file_selector.xml" value="0.3333333333333333" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/menu/activity_main.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/menu/activity_selector.xml" value="0.15572916666666667" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/menu/options.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/QuickCodeEditorTest/QuickCodeEditor/src/main/res/drawable/ic_more.xml" value="0.166" />
         <entry key="..\:/AndroidProjects/QuickCodeEditorTest/QuickCodeEditor/src/main/res/drawable/ic_tag.xml" value="0.166" />

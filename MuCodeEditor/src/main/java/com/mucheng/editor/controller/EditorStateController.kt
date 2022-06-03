@@ -44,8 +44,6 @@ class EditorStateController(private val controller: EditorController) : BaseCont
     var lexCoroutine: LexInterface? = null
         private set
 
-    var cursorAnimating = false
-
     fun selectText(position: RangePosition) {
         this.selectionRange = position
         selection = true
@@ -73,10 +71,6 @@ class EditorStateController(private val controller: EditorController) : BaseCont
 
     override fun getEditor(): MuCodeEditor {
         return controller.getEditor()
-    }
-
-    fun noCursorAnimate() {
-        cursorAnimating = false
     }
 
 }

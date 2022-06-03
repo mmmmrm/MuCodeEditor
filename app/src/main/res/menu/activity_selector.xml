@@ -32,58 +32,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
-        android:id="@+id/undo"
-        android:icon="@drawable/ic_undo"
-        android:title="回退"
+        android:id="@+id/up"
+        android:icon="@drawable/ic_up"
+        android:title="上一级"
         app:showAsAction="always"
         tools:ignore="HardcodedText" />
-
-    <item
-        android:id="@+id/redo"
-        android:icon="@drawable/ic_redo"
-        android:title="撤销"
-        app:showAsAction="always"
-        tools:ignore="AlwaysShowAction,HardcodedText" />
-
-    <item
-        android:id="@+id/more"
-        android:icon="@drawable/ic_vertical_more"
-        android:title="更多选项"
-        app:showAsAction="always"
-        tools:ignore="HardcodedText,UnusedAttribute">
-        <menu>
-
-            <item
-                android:id="@+id/open"
-                android:title="打开文件" />
-
-            <item
-                android:id="@+id/save"
-                android:title="保存文件" />
-
-            <item
-                android:id="@+id/close"
-                android:title="关闭文件" />
-
-            <item android:title="语言">
-
-                <menu>
-
-                    <item
-                        android:id="@+id/select_language_es"
-                        android:title="EcmaScript"
-                        app:showAsAction="never" />
-
-                    <item
-                        android:id="@+id/select_language_html"
-                        android:title="Html"
-                        app:showAsAction="never" />
-
-                </menu>
-
-            </item>
-
-        </menu>
-    </item>
 
 </menu>

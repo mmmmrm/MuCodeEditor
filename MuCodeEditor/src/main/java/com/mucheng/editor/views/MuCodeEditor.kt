@@ -6,12 +6,15 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Canvas
+import android.text.method.Touch.scrollTo
 import android.util.AttributeSet
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
 import android.widget.OverScroller
+import androidx.core.view.accessibility.AccessibilityRecordCompat.getMaxScrollX
+import androidx.core.view.accessibility.AccessibilityRecordCompat.getMaxScrollY
 import com.mucheng.editor.annotation.Suspend
 import com.mucheng.editor.annotation.UnsupportedUserUsage
 import com.mucheng.editor.base.ColumnRowIndexer
@@ -26,17 +29,14 @@ import com.mucheng.editor.paint.EditorPaints
 import com.mucheng.editor.position.RangePosition
 import com.mucheng.editor.provider.SpanProvider
 import com.mucheng.editor.text.ContentProvider
-import com.mucheng.editor.util.execCursorAnimationNow
-import com.mucheng.editor.util.getColumnY
-import com.mucheng.editor.util.getLineHeight
-import com.mucheng.editor.util.initUnitContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
+import com.mucheng.editor.util.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
 import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
+import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -95,14 +95,17 @@ open class MuCodeEditor @JvmOverloads constructor(
     }
 
     fun setText(text: String) {
+        mController.state.unselectText()
+        val animation = mController.style.cursorAnimation
         val cursor = mContentProvider.getCursor()
+
+        if (animation != null) {
+            mController.style.setCursorAnimation(animation.reset(), false)
+        }
         cursor.column = 1
         cursor.row = 0
-        mController.state.noCursorAnimate()
-        postInvalidate()
 
         mContentProvider.clear()
-
         text.replace("\r\n", "\n").split("\n").forEach {
             mContentProvider.addColumnContent(it)
         }
@@ -584,6 +587,10 @@ open class MuCodeEditor @JvmOverloads constructor(
 
     fun getTextInputConnection(): TextInputConnectionDelegation {
         return mInputConnection
+    }
+
+    fun cursorToStart() {
+        mInputConnection.onCursorHome()
     }
 
 }
