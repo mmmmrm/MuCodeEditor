@@ -95,11 +95,19 @@ open class MuCodeEditor @JvmOverloads constructor(
     }
 
     fun setText(text: String) {
+        val cursor = mContentProvider.getCursor()
+        cursor.column = 1
+        cursor.row = 0
+        mController.state.noCursorAnimate()
+        postInvalidate()
+
         mContentProvider.clear()
 
         text.replace("\r\n", "\n").split("\n").forEach {
             mContentProvider.addColumnContent(it)
         }
+
+        //mController.style.setCursorAnimation(animation, false)
         // 通知需要进行 Rescan
         mController.state.lex(mLexCoroutine)
     }

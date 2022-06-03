@@ -61,8 +61,11 @@ class CursorMovingAnimation(private val editor: MuCodeEditor) : CursorAnimation,
     override fun markCursorStartPosition() {
         val contentProvider = editor.getContentProvider()
         val cursor = contentProvider.getCursor()
-        val lineContent = contentProvider.getLineContent(cursor.column)
         val paints = editor.getPaints()
+        if (cursor.column > contentProvider.columnCount) {
+            return
+        }
+        val lineContent = contentProvider.getLineContent(cursor.column)
         val widths = FloatArray(cursor.row)
 
         if (lineContent.isEmpty()) {
@@ -84,8 +87,13 @@ class CursorMovingAnimation(private val editor: MuCodeEditor) : CursorAnimation,
     override fun markCursorEndPosition() {
         val contentProvider = editor.getContentProvider()
         val cursor = contentProvider.getCursor()
-        val lineContent = contentProvider.getLineContent(cursor.column)
         val paints = editor.getPaints()
+        if (cursor.column > contentProvider.columnCount) {
+            animateXAnimator.setFloatValues(startX, 0f)
+            animateYAnimator.setFloatValues(startY, getColumnY(paints.codeTextPaint, 1).toFloat())
+            return
+        }
+        val lineContent = contentProvider.getLineContent(cursor.column)
         val widths = FloatArray(cursor.row)
 
         paints.codeTextPaint.getTextWidths(lineContent, 0, cursor.row, widths)

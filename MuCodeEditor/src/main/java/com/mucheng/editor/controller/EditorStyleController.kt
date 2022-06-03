@@ -55,10 +55,12 @@ open class EditorStyleController(private val controller: EditorController) : Bas
         setTypeface(Typeface.createFromAsset(context.assets, path))
     }
 
-    fun setCursorAnimation(animation: CursorAnimation?) {
+    fun setCursorAnimation(animation: CursorAnimation?, invalidate: Boolean = true) {
         execBlockIfNeeded(this.cursorAnimation != animation) {
             this.cursorAnimation = animation
-            getEditor().invalidate()
+            if (invalidate) {
+                getEditor().invalidate()
+            }
         }
     }
 

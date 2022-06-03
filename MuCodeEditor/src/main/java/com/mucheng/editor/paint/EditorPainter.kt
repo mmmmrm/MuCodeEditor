@@ -197,9 +197,21 @@ class EditorPainter(
             return
         }
 
+        val lineHeight = getLineHeight(paints.lineNumberPaint)
+        if (cursorColumn > contentProvider.columnCount || !controller.state.cursorAnimating) {
+            canvas.drawLine(
+                paddingLeft,
+                (getDefaultCursorOffsetY(1) - lineHeight / 1.5).toFloat(),
+                paddingLeft,
+                getDefaultCursorOffsetY(1) + lineHeight / 9,
+                paints.cursorPaint
+            )
+            controller.state.cursorAnimating = true
+            return
+        }
+
         val cursorOffsetX = getCursorOffsetX(cursor)
         val textTopY = getCursorOffsetY(cursor)
-        val lineHeight = getLineHeight(paints.lineNumberPaint)
         canvas.drawLine(
             cursorOffsetX,
             (textTopY - lineHeight / 1.5).toFloat(),
