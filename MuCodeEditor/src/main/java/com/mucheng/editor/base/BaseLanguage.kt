@@ -53,4 +53,6 @@ abstract class BaseLanguage(protected val controller: EditorController) {
         return mAutoCompleteItem
     }
 
+    abstract fun getAutoCompleteHelper(): BaseAutoCompleteHelper
+
 }

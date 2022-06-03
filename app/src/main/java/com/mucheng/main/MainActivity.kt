@@ -11,6 +11,7 @@ import androidx.appcompat.widget.PopupMenu
 import com.google.android.material.appbar.MaterialToolbar
 import com.mucheng.editor.component.animation.CursorMovingAnimation
 import com.mucheng.editor.language.ecmascript.EcmaScriptLanguage
+import com.mucheng.editor.language.html.HtmlLanguage
 import com.mucheng.editor.views.MuCodeEditor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +26,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private lateinit var ecmaScriptLanguage: EcmaScriptLanguage
+    private lateinit var htmlLanguage: HtmlLanguage
+
     private lateinit var uri: Uri
     private lateinit var editor: MuCodeEditor
 
@@ -38,7 +42,8 @@ class MainActivity : AppCompatActivity() {
 
         editor.getController().apply {
             setEnabled(true)
-            setLanguage(EcmaScriptLanguage(this))
+            htmlLanguage = HtmlLanguage(this)
+            setLanguage(htmlLanguage)
             setDisplayDividingLine(false)
             theme.setUseDarkColors(true)
         }.style.apply {
@@ -47,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         CoroutineScope(Dispatchers.Main).launch {
-            addText(editor)
+            addText("test/index.html", editor)
         }
     }
 
@@ -59,6 +64,7 @@ class MainActivity : AppCompatActivity() {
     @Suppress("DEPRECATION")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val actionController = editor.getController().action
+        val controller = editor.getController()
 
         when (item.itemId) {
             R.id.undo -> {
@@ -87,6 +93,27 @@ class MainActivity : AppCompatActivity() {
                     editor.save(path)
                 }
             }
+
+            R.id.select_language_es -> {
+                if (!::ecmaScriptLanguage.isInitialized) {
+                    ecmaScriptLanguage = EcmaScriptLanguage(controller)
+                }
+                controller.setLanguage(ecmaScriptLanguage)
+                CoroutineScope(Dispatchers.IO).launch {
+                    addText("test/main.js", editor)
+                }
+            }
+
+            R.id.select_language_html -> {
+                if (!::htmlLanguage.isInitialized) {
+                    htmlLanguage = HtmlLanguage(controller)
+                }
+                controller.setLanguage(htmlLanguage)
+                CoroutineScope(Dispatchers.IO).launch {
+                    addText("test/index.html", editor)
+                }
+            }
+
         }
         return super.onOptionsItemSelected(item)
     }
@@ -94,7 +121,7 @@ class MainActivity : AppCompatActivity() {
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode != RESULT_OK && requestCode == REQUEST_CODE_GET_CONTENT) {
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_GET_CONTENT) {
             // 多选的情况
             val clipData = data?.clipData
             if (clipData != null && clipData.itemCount > 0) {
@@ -124,9 +151,9 @@ class MainActivity : AppCompatActivity() {
 
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    private suspend fun addText(editor: MuCodeEditor) {
+    private suspend fun addText(path: String, editor: MuCodeEditor) {
         withContext(Dispatchers.IO) {
-            editor.open(assets.open("test/main.js"))
+            editor.open(assets.open(path))
         }
     }
 

@@ -30,6 +30,8 @@
 package com.mucheng.editor.base
 
 import android.content.Context
+import android.text.TextUtils.replace
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.PopupWindow
@@ -105,7 +107,11 @@ abstract class BaseAutoCompletionPanel(
     protected open fun show() {
         val editor = controller.getEditor()
         editor.post {
-            showAsDropDown(editor, 0, 0, Gravity.CENTER)
+
+            showAsDropDown(editor,
+                0,
+                editor.height - (controller.symbolTablePanel?.height ?: 0),
+                Gravity.CENTER or Gravity.TOP)
         }
     }
 
@@ -131,7 +137,7 @@ abstract class BaseAutoCompletionPanel(
                 val char = lineContent[row]
 
                 // 字符串不能是空格等界符
-                if (lexer.isSymbol(char) || lexer.isWhitespace(char) || lexer.isDigit(char)) {
+                if (mAutoCompleteHelper.skipIfNeeded(lexer, char)) {
                     //直接退出循环
                     break
                 }
@@ -155,9 +161,10 @@ abstract class BaseAutoCompletionPanel(
                 return
             }
 
-            val nextCommit = item.name.replace(text, "")
-            inputConnection.commitText(nextCommit, 0, false)
+            mAutoCompleteHelper.insertText(cursor, item, lineContent, text, inputConnection)
             dismiss()
+            return
+
         }
 
     }

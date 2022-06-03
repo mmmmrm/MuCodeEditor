@@ -55,11 +55,31 @@
 
             <item
                 android:id="@+id/open"
+                android:enabled="false"
                 android:title="打开文件" />
 
             <item
                 android:id="@+id/save"
+                android:enabled="false"
                 android:title="保存文件" />
+
+            <item android:title="语言">
+
+                <menu>
+
+                    <item
+                        android:id="@+id/select_language_es"
+                        android:title="EcmaScript"
+                        app:showAsAction="never" />
+
+                    <item
+                        android:id="@+id/select_language_html"
+                        android:title="Html"
+                        app:showAsAction="never" />
+
+                </menu>
+
+            </item>
 
         </menu>
     </item>

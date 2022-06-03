@@ -32,5 +32,6 @@ package com.mucheng.editor.common
 data class AutoCompleteItem(
     val name: String,
     val type: String,
+    val completeText: String = name,
     val extra: MutableMap<String, Any> = HashMap()
 )

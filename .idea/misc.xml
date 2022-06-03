@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidProjects/MuCodeEditorExample/MuCodeEditor/src/main/res/drawable/ic_auto_completion_attribute.xml" value="0.165" />
+        <entry key="..\:/AndroidProjects/MuCodeEditorExample/MuCodeEditor/src/main/res/drawable/ic_auto_completion_element.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/MuCodeEditor/src/main/res/drawable/ic_auto_completion_function.xml" value="0.166" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/MuCodeEditor/src/main/res/drawable/ic_auto_completion_variable.xml" value="0.166" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/MuCodeEditor/src/main/res/drawable/ic_copy.xml" value="0.165" />
@@ -26,7 +28,7 @@
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/layout/activity_crash_handler.xml" value="0.15572916666666667" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/menu/activity_main.xml" value="0.1" />
-        <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/menu/options.xml" value="0.15572916666666667" />
+        <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/menu/options.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/QuickCodeEditorTest/QuickCodeEditor/src/main/res/drawable/ic_more.xml" value="0.166" />
         <entry key="..\:/AndroidProjects/QuickCodeEditorTest/QuickCodeEditor/src/main/res/drawable/ic_tag.xml" value="0.166" />
         <entry key="..\:/AndroidProjects/QuickCodeEditorTest/QuickCodeEditor/src/main/res/drawable/ic_tag_f.xml" value="0.166" />

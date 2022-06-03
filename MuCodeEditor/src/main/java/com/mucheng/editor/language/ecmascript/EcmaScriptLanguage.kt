@@ -43,6 +43,12 @@ open class EcmaScriptLanguage(controller: EditorController) : BaseLanguage(contr
 
     override val mParser: EcmaScriptParser = EcmaScriptParser()
 
+    private val autoCompleteHelper = DefaultAutoCompleteHelper()
+
+    override fun getAutoCompleteHelper(): BaseAutoCompleteHelper {
+        return autoCompleteHelper
+    }
+
     override val mAutoCompleteItem: MutableList<AutoCompleteItem>
 
     init {

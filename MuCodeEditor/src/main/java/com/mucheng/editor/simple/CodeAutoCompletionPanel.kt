@@ -228,7 +228,9 @@ open class CodeAutoCompletionPanel(
                     return@withContext
                 }
 
-                val matches = items.asSequence().filter { it.name.startsWith(words) }.toList()
+                val matches = items.asSequence()
+                    .filter { it.name.startsWith(words) || it.completeText.startsWith(words) }
+                    .toList()
 
                 items.clear()
                 items.addAll(matches)

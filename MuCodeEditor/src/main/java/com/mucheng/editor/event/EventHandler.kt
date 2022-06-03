@@ -29,14 +29,12 @@
 
 package com.mucheng.editor.event
 
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import com.mucheng.editor.position.RangePosition
 import com.mucheng.editor.text.LineContent
-import com.mucheng.editor.util.dp
-import com.mucheng.editor.util.execCursorAnimationIfNeeded
-import com.mucheng.editor.util.execCursorAnimationNow
-import com.mucheng.editor.util.getLineHeight
+import com.mucheng.editor.util.*
 import com.mucheng.editor.views.MuCodeEditor
 import kotlinx.coroutines.Runnable
 import kotlin.math.abs
@@ -49,6 +47,9 @@ class EventHandler(private val editor: MuCodeEditor) : GestureDetector.OnGesture
 
     private val scroller by lazy { editor.getScroller() }
 
+    private var clickX = 0f
+    private var clickY = 0f
+
     private var isTouchingFirstHandleDrop = false
     private var isTouchingSecondHandleDrop = false
 
@@ -57,8 +58,8 @@ class EventHandler(private val editor: MuCodeEditor) : GestureDetector.OnGesture
         isTouchingSecondHandleDrop = false
 
         if (editor.getController().state.selection) {
-            val clickX = e.x
-            val clickY = e.y
+            clickX = e.x
+            clickY = e.y
             val painter = editor.getPainter()
             val handleDropStartX = painter.getHandleDropFirstX()
             val handleDropStartY = painter.getHandleDropFirstY()
@@ -406,6 +407,7 @@ class EventHandler(private val editor: MuCodeEditor) : GestureDetector.OnGesture
 
         scroller.forceFinished(true)
         editor.getController().state.unselectText()
+        editor.dismissCodeAutoCompletionPanel()
 
         //再去计算点击的行、列
         val column = editor.getLineByPointY(scroller.currY + e.y)
@@ -498,7 +500,9 @@ class EventHandler(private val editor: MuCodeEditor) : GestureDetector.OnGesture
                         this.column = column
                         this.row = row
                     }
-                    scrollBy(0f, -getLineHeight(editor.getPaints().lineNumberPaint).toFloat(), false)
+                    scrollBy(0f,
+                        -getLineHeight(editor.getPaints().lineNumberPaint).toFloat(),
+                        false)
                     editor.post(this)
                     return
                 }
@@ -518,7 +522,9 @@ class EventHandler(private val editor: MuCodeEditor) : GestureDetector.OnGesture
                         this.column = column
                         this.row = row
                     }
-                    scrollBy(0f, -getLineHeight(editor.getPaints().lineNumberPaint).toFloat(), false)
+                    scrollBy(0f,
+                        -getLineHeight(editor.getPaints().lineNumberPaint).toFloat(),
+                        false)
                     editor.post(this)
                     return
                 }

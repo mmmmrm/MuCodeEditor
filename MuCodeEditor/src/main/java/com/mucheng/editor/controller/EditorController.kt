@@ -124,6 +124,7 @@ open class EditorController(private val editor: MuCodeEditor) : BaseController()
             this.language = language
             if (autoCompletionPanel != null) {
                 autoCompletionPanel!!.setLanguage(language)
+                autoCompletionPanel!!.setAutoCompleteHelper(language.getAutoCompleteHelper())
             }
             editor.postInvalidate()
         }

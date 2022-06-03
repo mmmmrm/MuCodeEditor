@@ -33,10 +33,10 @@
     <item
         android:id="@+id/test"
         android:title="测试"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 
     <item
         android:title="测试2"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 
 </menu>

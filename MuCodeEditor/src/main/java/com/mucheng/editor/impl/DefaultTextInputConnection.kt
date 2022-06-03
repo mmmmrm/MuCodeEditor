@@ -346,6 +346,7 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
         execCursorAnimationIfNeeded(cursorAnimation, editor) {
             toCursorLeftInternal()
         }
+        editor.dismissCodeAutoCompletionPanel()
         editor.scrollToColumn(cursor.column, cursor.row)
     }
 
@@ -374,6 +375,7 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
         execCursorAnimationIfNeeded(cursorAnimation, editor) {
             toCursorRightInternal()
         }
+        editor.dismissCodeAutoCompletionPanel()
         editor.scrollToColumn(cursor.column, cursor.row)
     }
 
@@ -383,6 +385,7 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
         execCursorAnimationIfNeeded(cursorAnimation, editor) {
             toCursorTopInternal()
         }
+        editor.dismissCodeAutoCompletionPanel()
         editor.scrollToColumn(cursor.column, cursor.row)
     }
 
@@ -420,6 +423,7 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
         execCursorAnimationIfNeeded(cursorAnimation, editor) {
             toCursorBottomInternal()
         }
+        editor.dismissCodeAutoCompletionPanel()
         editor.scrollToColumn(cursor.column, cursor.row)
     }
 
@@ -479,6 +483,7 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
             cursor.column = 1
             cursor.row = 0
         }
+        editor.dismissCodeAutoCompletionPanel()
         editor.scrollToTop()
     }
 
@@ -490,6 +495,7 @@ class DefaultTextInputConnection(private val editor: MuCodeEditor) : TextInputCo
             cursor.column = contentProvider.columnCount
             cursor.row = contentProvider.getColumnRowCount(contentProvider.columnCount)
         }
+        editor.dismissCodeAutoCompletionPanel()
         editor.scrollToBottom()
     }
 

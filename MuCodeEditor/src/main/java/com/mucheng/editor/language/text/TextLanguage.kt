@@ -29,18 +29,26 @@
 
 package com.mucheng.editor.language.text
 
+import com.mucheng.editor.base.BaseAutoCompleteHelper
 import com.mucheng.editor.base.BaseLanguage
 import com.mucheng.editor.base.BaseLexer
 import com.mucheng.editor.base.BaseParser
 import com.mucheng.editor.common.AutoCompleteItem
 import com.mucheng.editor.controller.EditorController
+import com.mucheng.editor.simple.DefaultAutoCompleteHelper
 
 class TextLanguage(controller: EditorController) : BaseLanguage(controller) {
+
+    private val autoCompleteHelper = DefaultAutoCompleteHelper()
 
     override val mAutoCompleteItem: MutableList<AutoCompleteItem> = ArrayList(0)
 
     override val mLexer: BaseLexer<*>? = null
 
     override val mParser: BaseParser<*>? = null
+
+    override fun getAutoCompleteHelper(): BaseAutoCompleteHelper {
+        return autoCompleteHelper
+    }
 
 }

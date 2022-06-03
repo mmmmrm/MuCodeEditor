@@ -29,7 +29,12 @@
 
 package com.mucheng.editor.base
 
+import android.text.TextUtils.replace
 import com.mucheng.editor.R
+import com.mucheng.editor.common.AutoCompleteItem
+import com.mucheng.editor.component.Cursor
+import com.mucheng.editor.handler.TextInputConnectionDelegation
+import com.mucheng.editor.text.LineContent
 
 abstract class BaseAutoCompleteHelper {
 
@@ -66,7 +71,7 @@ abstract class BaseAutoCompleteHelper {
     abstract fun getMyTypeIconResource(type: String): Int
 
     fun getTypeDescription(type: String): String {
-        return when(type) {
+        return when (type) {
             VARIABLE -> "variable"
             KEYWORD -> "keyword"
             FUNCTION -> "function"
@@ -75,5 +80,20 @@ abstract class BaseAutoCompleteHelper {
     }
 
     abstract fun getMyTypeDescription(type: String): String
+
+    open fun skipIfNeeded(lexer: BaseLexer<*>, char: Char): Boolean {
+        return lexer.isDigit(char) || lexer.isSymbol(char) || lexer.isWhitespace(char)
+    }
+
+    open fun insertText(
+        cursor: Cursor,
+        item: AutoCompleteItem,
+        lineContent: LineContent,
+        text: String,
+        inputConnection: TextInputConnectionDelegation,
+    ) {
+        val nextCommit = item.completeText.replace(text, "")
+        inputConnection.commitText(nextCommit, 0)
+    }
 
 }
