@@ -118,6 +118,9 @@ class HtmlLanguage(controller: EditorController) : BaseLanguage(controller) {
         AutoCompleteItem("hspace",
             HtmlAutoCompleteHelper.ATTRIBUTE,
             createAttribute("hspace")) putTo list
+        AutoCompleteItem("onclick",
+            HtmlAutoCompleteHelper.ATTRIBUTE,
+            createAttribute("onclick")) putTo list
         AutoCompleteItem("name",
             HtmlAutoCompleteHelper.ATTRIBUTE,
             createAttribute("name")) putTo list
