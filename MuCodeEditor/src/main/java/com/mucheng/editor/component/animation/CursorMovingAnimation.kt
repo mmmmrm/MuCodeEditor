@@ -126,7 +126,7 @@ class CursorMovingAnimation(private val editor: MuCodeEditor) : CursorAnimation,
         return animating
     }
 
-    override fun reset(): CursorMovingAnimation {
+    override fun newInstance(): CursorMovingAnimation {
         return CursorMovingAnimation(editor)
     }
 

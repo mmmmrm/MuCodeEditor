@@ -46,7 +46,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
 
         val permissions: MutableList<String> = ArrayList()
-        if (Build.VERSION.SDK_INT == 30) {
+        if (Build.VERSION.SDK_INT >= 30) {
             permissions.add(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
         }
         permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)

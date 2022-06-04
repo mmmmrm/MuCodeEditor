@@ -93,7 +93,7 @@ abstract class BaseAutoCompleteHelper {
         inputConnection: TextInputConnectionDelegation,
     ) {
         val nextCommit = item.completeText.replace(text, "")
-        inputConnection.commitText(nextCommit, 0)
+        inputConnection.commitText(nextCommit, 0, false)
     }
 
 }

@@ -156,7 +156,7 @@ abstract class BaseAutoCompletionPanel(
 
             val text = words.toString()
 
-            if (text == item.name) {
+            if (text == item.completeText) {
                 dismiss()
                 return
             }

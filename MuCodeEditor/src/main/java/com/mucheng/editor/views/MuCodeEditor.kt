@@ -6,7 +6,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Canvas
-import android.text.method.Touch.scrollTo
+import android.inputmethodservice.InputMethodService
 import android.util.AttributeSet
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -31,12 +31,10 @@ import com.mucheng.editor.provider.SpanProvider
 import com.mucheng.editor.text.ContentProvider
 import com.mucheng.editor.util.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.sync.Mutex
 import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
-import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -100,7 +98,7 @@ open class MuCodeEditor @JvmOverloads constructor(
         val cursor = mContentProvider.getCursor()
 
         if (animation != null) {
-            mController.style.setCursorAnimation(animation.reset(), false)
+            mController.style.setCursorAnimation(animation.newInstance(), false)
         }
         cursor.column = 1
         cursor.row = 0
@@ -166,25 +164,24 @@ open class MuCodeEditor @JvmOverloads constructor(
      * */
     @Suspend
     open suspend fun save(path: String): Result<Unit> {
-        return coroutineScope {
-            return@coroutineScope withContext(Dispatchers.IO) {
-                val sr = mContentProvider.contentToString().reader()
-                val result = runCatching {
-                    val bw = FileOutputStream(path).bufferedWriter()
-                    var flag: Int
-                    val buffer = CharArray(1024)
-                    sr.use {
-                        bw.use {
-                            while (sr.read(buffer).also { flag = it } != -1) {
-                                bw.write(buffer, 0, flag)
-                                bw.flush()
-                            }
+        return withContext(Dispatchers.IO) {
+            val sr = mContentProvider.contentToString().reader()
+            val result = runCatching {
+                val bw = FileOutputStream(path).bufferedWriter()
+                var flag: Int
+                val buffer = CharArray(1024)
+                sr.use {
+                    bw.use {
+                        while (sr.read(buffer).also { flag = it } != -1) {
+                            bw.write(buffer, 0, flag)
+                            bw.flush()
                         }
                     }
                 }
-                return@withContext result
             }
+            result
         }
+
     }
 
     open fun getText(): String {
@@ -453,7 +450,16 @@ open class MuCodeEditor @JvmOverloads constructor(
 
         val inputMethodManager =
             context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_FORCED)
+        inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    fun hideSoftInputMethod() {
+        val inputMethodManager =
+            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (inputMethodManager.isActive) {
+            inputMethodManager.hideSoftInputFromWindow(windowToken,
+                InputMethodManager.HIDE_NOT_ALWAYS)
+        }
     }
 
     // 由 x 坐标推到至列
@@ -506,6 +512,8 @@ open class MuCodeEditor @JvmOverloads constructor(
         val maxPaintHeight = mPainter.getMaxHeight()
         var maxHeight = maxPaintHeight
         val symbolHeight = mController.symbolTablePanel?.height ?: 0
+
+
         if (maxPaintHeight > height - symbolHeight) {
             maxHeight -= height / 2
         } else {

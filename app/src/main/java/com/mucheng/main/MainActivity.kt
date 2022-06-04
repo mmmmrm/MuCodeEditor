@@ -77,6 +77,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.open -> {
+                editor.hideSoftInputMethod()
                 val intent = Intent(this, FileSelectorActivity::class.java)
                 startActivityForResult(intent, REQUEST_SELECT_FILE)
             }
@@ -87,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                     return false
                 }
 
-                save()
+                save {}
             }
 
             R.id.close -> {
@@ -114,23 +115,29 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun save() {
+    private inline fun save(crossinline onComplete: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
+            if (path == null) {
+                "你还没有打开文件!".showToast()
+                return@launch
+            }
             val result = editor.save(path!!)
             if (result.isFailure) {
                 "保存失败：${result.exceptionOrNull()}".showToast()
             } else {
                 "保存成功".showToast()
             }
+            onComplete()
         }
     }
 
     private fun close() {
-        save()
-        this.path = null
-        when (language) {
-            "html" -> openHtml()
-            "es" -> openES()
+        save {
+            this.path = null
+            when (language) {
+                "html" -> openHtml()
+                "es" -> openES()
+            }
         }
     }
 

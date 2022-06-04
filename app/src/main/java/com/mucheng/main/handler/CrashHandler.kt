@@ -42,6 +42,7 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
     private lateinit var context: Context
 
     override fun uncaughtException(t: Thread, e: Throwable) {
+        e.printStackTrace()
         // 处理异常
         val errorMessage = getErrorReport(t, e)
         // 启动异常捕获的 Activity

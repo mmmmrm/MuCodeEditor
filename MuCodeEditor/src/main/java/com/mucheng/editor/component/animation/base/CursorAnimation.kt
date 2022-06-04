@@ -47,6 +47,6 @@ interface CursorAnimation {
 
     fun animating(): Boolean
 
-    fun reset(): CursorAnimation
+    fun newInstance(): CursorAnimation
 
 }

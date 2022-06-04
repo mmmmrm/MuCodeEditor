@@ -67,7 +67,7 @@ open class CodeAutoCompletionPanel(
         animationStyle = androidx.appcompat.R.style.Animation_AppCompat_DropDownUp
         width = DeviceUtil.getDeviceWidth(context)
         height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-            183f,
+            122f,
             context.resources.displayMetrics).toInt()
         isTouchable = true
         isFocusable = false
