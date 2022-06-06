@@ -192,29 +192,12 @@ class EditorPainter(
 
         val startVisibleColumn = editor.getStartVisibleLine()
         val endVisibleColumn = editor.getEndVisibleLine()
-        val cursorAnimation = controller.style.cursorAnimation
 
         if (cursorColumn > endVisibleColumn || cursorColumn < startVisibleColumn) {
             return
         }
 
         val lineHeight = getLineHeight(paints.lineNumberPaint)
-        if (cursorColumn > contentProvider.columnCount || (cursorAnimation?.animateY()
-                ?: 0f) > getColumnY(
-                paints.codeTextPaint,
-                contentProvider.columnCount)
-        ) {
-
-            canvas.drawLine(
-                paddingLeft,
-                (getDefaultCursorOffsetY(1) - lineHeight / 1.5).toFloat(),
-                paddingLeft,
-                getDefaultCursorOffsetY(1) + lineHeight / 9,
-                paints.cursorPaint
-            )
-
-            return
-        }
 
         val cursorOffsetX = getCursorOffsetX(cursor)
         val textTopY = getCursorOffsetY(cursor)

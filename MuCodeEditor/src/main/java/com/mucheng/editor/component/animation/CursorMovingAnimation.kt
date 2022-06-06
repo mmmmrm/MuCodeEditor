@@ -63,9 +63,6 @@ class CursorMovingAnimation(private val editor: MuCodeEditor) : CursorAnimation,
         val contentProvider = editor.getContentProvider()
         val cursor = contentProvider.getCursor()
         val paints = editor.getPaints()
-        if (cursor.column > contentProvider.columnCount) {
-            return
-        }
         val lineContent = contentProvider.getLineContent(cursor.column)
         val widths = FloatArray(cursor.row)
 
@@ -89,11 +86,6 @@ class CursorMovingAnimation(private val editor: MuCodeEditor) : CursorAnimation,
         val contentProvider = editor.getContentProvider()
         val cursor = contentProvider.getCursor()
         val paints = editor.getPaints()
-        if (cursor.column > contentProvider.columnCount) {
-            animateXAnimator.setFloatValues(startX, 0f)
-            animateYAnimator.setFloatValues(startY, getColumnY(paints.codeTextPaint, 1).toFloat())
-            return
-        }
         val lineContent = contentProvider.getLineContent(cursor.column)
         val widths = FloatArray(cursor.row)
 
