@@ -63,6 +63,6 @@ https:// rosemoe.github.io/2020/02/15/highlight-editor-creation/
 
 ## 以下是使用截图
 
-<img src="./pictures/example1.jpg" width="40%" height="auto"></img>
+<img src="./pictures/example.jpg" width="40%" height="auto"></img>
 
 <img src="./pictures/example2.jpg" width="40%" height="auto"></img>
