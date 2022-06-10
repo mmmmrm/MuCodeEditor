@@ -100,9 +100,11 @@ open class MuCodeEditor @JvmOverloads constructor(
         if (animation != null) {
             mController.style.setCursorAnimation(animation.newInstance(), false)
         }
+
         cursor.column = 1
         cursor.row = 0
 
+        mController.action.clear()
         mContentProvider.clear()
         text.replace("\r\n", "\n").split("\n").forEach {
             mContentProvider.addColumnContent(it)

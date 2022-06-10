@@ -79,6 +79,11 @@
                         android:title="Html"
                         app:showAsAction="never" />
 
+                    <item
+                        android:id="@+id/select_language_css"
+                        android:title="Css"
+                        app:showAsAction="never" />
+
                 </menu>
 
             </item>

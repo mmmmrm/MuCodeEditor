@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import com.google.android.material.appbar.MaterialToolbar
 import com.mucheng.editor.component.animation.CursorMovingAnimation
+import com.mucheng.editor.language.css.CssLanguage
 import com.mucheng.editor.language.ecmascript.EcmaScriptLanguage
 import com.mucheng.editor.language.html.HtmlLanguage
 import com.mucheng.editor.views.MuCodeEditor
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private var language = "html"
     private lateinit var ecmaScriptLanguage: EcmaScriptLanguage
     private lateinit var htmlLanguage: HtmlLanguage
+    private lateinit var cssLanguage: CssLanguage
 
     private var path: String? = null
     private lateinit var editor: MuCodeEditor
@@ -88,7 +90,7 @@ class MainActivity : AppCompatActivity() {
                     return false
                 }
 
-                save {}
+                save()
             }
 
             R.id.close -> {
@@ -111,11 +113,19 @@ class MainActivity : AppCompatActivity() {
                 openHtml()
             }
 
+            R.id.select_language_css -> {
+                if (!::cssLanguage.isInitialized) {
+                    cssLanguage = CssLanguage(controller)
+                }
+                controller.setLanguage(cssLanguage)
+                openCss()
+            }
+
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private inline fun save(crossinline onComplete: () -> Unit) {
+    private inline fun save(crossinline onComplete: () -> Unit = {}) {
         CoroutineScope(Dispatchers.IO).launch {
             if (path == null) {
                 "你还没有打开文件!".showToast()
@@ -135,8 +145,9 @@ class MainActivity : AppCompatActivity() {
         save {
             this.path = null
             when (language) {
-                "html" -> openHtml()
                 "es" -> openES()
+                "html" -> openHtml()
+                "css" -> openCss()
             }
         }
     }
@@ -164,6 +175,16 @@ class MainActivity : AppCompatActivity() {
         }
         CoroutineScope(Dispatchers.IO).launch {
             addText("test/index.html", editor)
+        }
+    }
+
+    private fun openCss() {
+        language = "css"
+        if (path != null) {
+            return
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            addText("test/style.css", editor)
         }
     }
 

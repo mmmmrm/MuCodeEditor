@@ -51,7 +51,6 @@ class EcmaScriptToken private constructor(type: CodeEditorColorToken, value: Str
         val IDENTIFIER = EcmaScriptToken(CodeEditorColorToken.IDENTIFIER_COLOR, "IDENTIFIER")
 
         val WHITESPACE = EcmaScriptToken(CodeEditorColorToken.KEYWORD_COLOR, "WHITESPACE")
-        val NEW_LINE = EcmaScriptToken(CodeEditorColorToken.KEYWORD_COLOR, "NEW_LINE")
 
         val FALSE = EcmaScriptToken(CodeEditorColorToken.SPECIAL_COLOR, "FALSE")
         val TRUE = EcmaScriptToken(CodeEditorColorToken.SPECIAL_COLOR, "TRUE")
