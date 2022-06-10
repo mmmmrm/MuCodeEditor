@@ -243,25 +243,17 @@ class CssLexer : BaseLexer<CssToken>() {
         }
 
         val start = row
-        while (isDigit() && isNotRowEOF()) {
+        while ((isDigit() || isLetter()) && isNotRowEOF()) {
             yyChar()
         }
-        var end = row
-        if (isLetter(scannedChar)) {
-            while (isLetter() && isNotRowEOF()) {
-                yyChar()
-            }
-            end = row
-        } else {
-            row = end
-            getChar()
-        }
+        val end = row
 
         addToken(
             CssToken.DIGIT,
             ColumnRowPosition(column, start),
             ColumnRowPosition(column, end)
         )
+        row = end
         return true
     }
 
