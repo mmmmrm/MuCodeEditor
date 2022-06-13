@@ -16,6 +16,7 @@
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/MuCodeEditor/src/main/res/layout/layout_symbol_table_panel.xml" value="0.5" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/MuCodeEditor/src/main/res/layout/layout_symbol_table_panel_item.xml" value="0.4466666666666667" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/MuCodeEditor/src/main/res/layout/layout_tool_options_panel_item.xml" value="0.3333333333333333" />
+        <entry key="..\:/AndroidProjects/MuCodeEditorExample/MuColorPickerView/src/main/res/layout/layout_colorpicker.xml" value="0.28615384615384615" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/QuickCodeEditor/src/main/res/drawable/ic_handle_drop.xml" value="0.166" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/QuickCodeEditor/src/main/res/drawable/ic_handle_drop_left.xml" value="0.166" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/QuickCodeEditor/src/main/res/drawable/ic_handle_drop_right.xml" value="0.165" />
@@ -28,7 +29,7 @@
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/drawable/ic_vertical_more.xml" value="0.166" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/layout/activity_crash_handler.xml" value="0.15572916666666667" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/layout/activity_file_selector.xml" value="0.22" />
-        <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/layout/activity_main.xml" value="0.16666666666666666" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/layout/activity_splash.xml" value="0.15572916666666667" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/layout/layout_file_selector.xml" value="0.3333333333333333" />
         <entry key="..\:/AndroidProjects/MuCodeEditorExample/app/src/main/res/menu/activity_main.xml" value="0.1" />

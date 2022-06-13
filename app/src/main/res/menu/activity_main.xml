@@ -88,6 +88,11 @@
 
             </item>
 
+            <item
+                android:id="@+id/colorPicker"
+                android:title="颜色选择器"
+                app:showAsAction="never" />
+
         </menu>
     </item>
 

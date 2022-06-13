@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "MuCodeEditorExample"
 include ':app'
 include ':MuCodeEditor'
+include ':MuColorPickerView'

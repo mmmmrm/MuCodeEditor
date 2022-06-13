@@ -2,20 +2,14 @@ package com.mucheng.main
 
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.system.Os.close
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.appcompat.widget.PopupMenu
 import com.google.android.material.appbar.MaterialToolbar
-import com.mucheng.editor.component.ColorPickerDialog
+import com.mucheng.colorpicker.ColorPickerDialog
 import com.mucheng.editor.component.animation.CursorMovingAnimation
-import com.mucheng.editor.enums.CodeEditorColorToken
 import com.mucheng.editor.language.css.CssLanguage
 import com.mucheng.editor.language.ecmascript.EcmaScriptLanguage
 import com.mucheng.editor.language.html.HtmlLanguage
@@ -61,11 +55,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         openHtml()
-
-        val alertDialog = ColorPickerDialog(this,
-            com.google.android.material.R.style.ThemeOverlay_MaterialComponents_Dark)
-            .setBackground(ColorDrawable(Color.parseColor("#1a1a1a")))
-            .show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -128,6 +117,13 @@ class MainActivity : AppCompatActivity() {
                 }
                 controller.setLanguage(cssLanguage)
                 openCss()
+            }
+
+            R.id.colorPicker -> {
+                ColorPickerDialog(this)
+                    .setTitleTextColor(Color.parseColor("#FFFFFFFF"))
+                    .setBackgroundColor(Color.parseColor("#1e1e1e"))
+                    .show()
             }
 
         }

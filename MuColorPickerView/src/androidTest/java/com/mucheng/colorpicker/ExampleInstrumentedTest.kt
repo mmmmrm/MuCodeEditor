@@ -27,20 +27,27 @@
  *
  */
 
-package com.mucheng.editor.component
+package com.mucheng.colorpicker
 
-import android.content.Context
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.mucheng.editor.views.ColorPickerView
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
 
-@Suppress("LeakingThis")
-open class ColorPickerDialog(context: Context, style: Int = 0) : MaterialAlertDialogBuilder(context, style) {
+import org.junit.Test
+import org.junit.runner.RunWith
 
-    init {
-        setTitle("提取颜色")
-        setView(ColorPickerView(context))
-        setCancelable(true)
-        setPositiveButton("确定", null)
+import org.junit.Assert.*
+
+/**
+ * Instrumented test, which will execute on an Android device.
+ *
+ * See [testing documentation](http://d.android.com/tools/testing).
+ */
+@RunWith(AndroidJUnit4::class)
+class ExampleInstrumentedTest {
+    @Test
+    fun useAppContext() {
+        // Context of the app under test.
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        assertEquals("com.mucheng.colorpicker.test", appContext.packageName)
     }
-
 }

@@ -61,6 +61,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.2'
     implementation 'com.guolindev.permissionx:permissionx:1.6.4'
     implementation project(path: ':MuCodeEditor')
+    implementation project(path: ':MuColorPickerView')
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

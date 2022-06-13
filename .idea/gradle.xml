@@ -11,6 +11,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/MuCodeEditor" />
+            <option value="$PROJECT_DIR$/MuColorPickerView" />
             <option value="$PROJECT_DIR$/app" />
           </set>
         </option>
