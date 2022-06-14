@@ -6,15 +6,12 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Canvas
-import android.inputmethodservice.InputMethodService
 import android.util.AttributeSet
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
 import android.widget.OverScroller
-import androidx.core.view.accessibility.AccessibilityRecordCompat.getMaxScrollX
-import androidx.core.view.accessibility.AccessibilityRecordCompat.getMaxScrollY
 import com.mucheng.editor.annotation.Suspend
 import com.mucheng.editor.annotation.UnsupportedUserUsage
 import com.mucheng.editor.base.ColumnRowIndexer
@@ -29,8 +26,13 @@ import com.mucheng.editor.paint.EditorPaints
 import com.mucheng.editor.position.RangePosition
 import com.mucheng.editor.provider.SpanProvider
 import com.mucheng.editor.text.ContentProvider
-import com.mucheng.editor.util.*
-import kotlinx.coroutines.*
+import com.mucheng.editor.util.execCursorAnimationNow
+import com.mucheng.editor.util.getColumnY
+import com.mucheng.editor.util.getLineHeight
+import com.mucheng.editor.util.initUnitContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -214,6 +216,7 @@ open class MuCodeEditor @JvmOverloads constructor(
     }
 
     //绘制
+    @Suppress("UNUSED_VARIABLE")
     @UnsupportedUserUsage
     override fun onDraw(canvas: Canvas) {
         //测量绘制用时
@@ -601,6 +604,13 @@ open class MuCodeEditor @JvmOverloads constructor(
 
     fun cursorToStart() {
         mInputConnection.onCursorHome()
+    }
+
+    fun updateComponent() {
+        postInvalidate()
+        mController.autoCompletionPanel?.updateTheme()
+        mController.toolOptionsPanel.updateTheme()
+        mController.symbolTablePanel?.updateTheme()
     }
 
 }

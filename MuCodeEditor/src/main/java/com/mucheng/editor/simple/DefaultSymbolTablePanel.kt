@@ -50,6 +50,8 @@ import com.mucheng.editor.util.getDp
 open class DefaultSymbolTablePanel(context: Context, controller: EditorController) :
     BaseSymbolTablePanel(context, controller), BaseSymbolTablePanel.OnSymbolClickListener {
 
+    private lateinit var content: View
+
     private var adapter: SymbolTableAdapter? = null
 
     @SuppressLint("NotifyDataSetChanged")
@@ -72,7 +74,10 @@ open class DefaultSymbolTablePanel(context: Context, controller: EditorControlle
     }
 
     override fun show() {
-        contentView = createContentView()
+        if (!::content.isInitialized) {
+            content = createContentView()
+            contentView = content
+        }
 
         val editor = controller.getEditor()
         editor.post {
@@ -81,11 +86,10 @@ open class DefaultSymbolTablePanel(context: Context, controller: EditorControlle
         }
     }
 
-    override fun updateSize() {
-        super.updateSize()
-        contentView = createContentView()
+    @SuppressLint("NotifyDataSetChanged")
+    override fun updateTheme() {
+        adapter?.notifyDataSetChanged()
     }
-
 
     @SuppressLint("InflateParams")
     private fun createContentView(): View {

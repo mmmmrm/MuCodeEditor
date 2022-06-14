@@ -427,12 +427,17 @@ class EditorPainter(
 
         val startLine = editor.getStartVisibleLine()
         val endLine = editor.getEndVisibleLine()
+        val columnCount = editor.getContentProvider().columnCount
 
         paints.codeTextPaint.color =
             controller.theme.getColor(CodeEditorColorToken.IDENTIFIER_COLOR)
 
         var workColumn = startLine
-        if (startLine > editor.getContentProvider().columnCount) {
+        if (startLine > columnCount) {
+            return
+        }
+
+        if (columnCount == 0) {
             return
         }
 
@@ -483,6 +488,7 @@ class EditorPainter(
                         offsetX += width
                     }
                 } catch (e: IndexOutOfBoundsException) {
+                    // 绘制弥补
                     paints.codeTextPaint.color =
                         editor.getController().theme.getColor(CodeEditorColorToken.IDENTIFIER_COLOR)
                     canvas.drawText(

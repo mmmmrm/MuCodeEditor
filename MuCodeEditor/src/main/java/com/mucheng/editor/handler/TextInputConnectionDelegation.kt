@@ -31,11 +31,13 @@ package com.mucheng.editor.handler
 
 import android.view.KeyEvent
 import android.view.inputmethod.BaseInputConnection
+import com.mucheng.editor.annotation.Simple
 import com.mucheng.editor.annotation.UnsupportedUserUsage
 import com.mucheng.editor.colorful.LexInterface
 import com.mucheng.editor.event.TextInputConnection
 import com.mucheng.editor.views.MuCodeEditor
 
+@Simple
 open class TextInputConnectionDelegation(
     private val view: MuCodeEditor,
     private var inputConnection: TextInputConnection,

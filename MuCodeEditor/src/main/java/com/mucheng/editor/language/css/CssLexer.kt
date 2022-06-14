@@ -34,7 +34,6 @@ import com.mucheng.editor.position.ColumnRowPosition
 
 class CssLexer : BaseLexer<CssToken>() {
 
-    @Synchronized
     override fun analyze() {
         if (column > columnSize()) {
             return

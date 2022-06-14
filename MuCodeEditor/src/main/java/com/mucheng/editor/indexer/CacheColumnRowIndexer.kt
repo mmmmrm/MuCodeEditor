@@ -49,6 +49,7 @@ class CacheColumnRowIndexer(private val contentProvider: ContentProvider) : Colu
         return result
     }
 
+    // FIXME 待修复 index -> (column, row)
     override fun index2columnRow(index: Int): Position {
         val result: Position
         // 通过距离最近的 CharPosition 推出 (column, row)

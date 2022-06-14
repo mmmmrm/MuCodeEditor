@@ -29,16 +29,12 @@
 
 package com.mucheng.editor.language.html
 
-import android.util.Log
 import com.mucheng.editor.base.BaseLexer
-import com.mucheng.editor.language.ecmascript.EcmaScriptToken
 import com.mucheng.editor.position.ColumnRowPosition
-import java.lang.reflect.Array.getChar
 
 @Suppress("SpellCheckingInspection")
 class HtmlLexer : BaseLexer<HtmlToken>() {
 
-    @Synchronized
     override fun analyze() {
         if (column > columnSize()) {
             return

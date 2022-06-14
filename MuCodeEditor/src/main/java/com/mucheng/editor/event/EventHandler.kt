@@ -29,12 +29,14 @@
 
 package com.mucheng.editor.event
 
-import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import com.mucheng.editor.position.RangePosition
 import com.mucheng.editor.text.LineContent
-import com.mucheng.editor.util.*
+import com.mucheng.editor.util.dp
+import com.mucheng.editor.util.execCursorAnimationIfNeeded
+import com.mucheng.editor.util.execCursorAnimationNow
+import com.mucheng.editor.util.getLineHeight
 import com.mucheng.editor.views.MuCodeEditor
 import kotlinx.coroutines.Runnable
 import kotlin.math.abs

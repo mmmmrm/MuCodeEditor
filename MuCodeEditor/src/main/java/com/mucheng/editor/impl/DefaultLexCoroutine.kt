@@ -50,37 +50,43 @@ open class DefaultLexCoroutine(private val editor: MuCodeEditor) : LexInterface 
 
     private val lock = Mutex()
 
+    @Suppress("ControlFlowWithEmptyBody")
     override suspend fun analyze() {
         val contentProvider = editor.getContentProvider()
         spanProvider.clear()
 
-        val lexer = controller.language.getLexer()!!
-        lexer.clearAll()
-        lexer.setSources(contentProvider.getLineContents().toList())
-        lexer.analyze()
+        contentProvider.useLock(true) {
+            try {
+                val lexer = controller.language.getLexer()!!
+                lexer.clearAll()
+                lexer.setSources(contentProvider.getLineContents().toList())
+                lexer.analyze()
 
-        val tokens = lexer.getTokens().toList()
-        val map = hashMapOf<Int, OpenArrayList<Pair<BaseToken, IntRange>>>()
-        lexer.clearAll()
+                val tokens = lexer.getTokens().toList()
+                val map = hashMapOf<Int, OpenArrayList<Pair<BaseToken, IntRange>>>()
+                lexer.clearAll()
 
-        var workColumn = 1
-        while (workColumn <= contentProvider.columnCount) {
-            map[workColumn] = OpenArrayList()
-            ++workColumn
+                var workColumn = 1
+                while (workColumn <= contentProvider.columnCount) {
+                    map[workColumn] = OpenArrayList()
+                    ++workColumn
+                }
+
+                tokens.forEach {
+                    map[it.second.first.column]!!.add(it.first to it.second.first.row..it.second.second.row)
+                }
+
+                map.keys.forEach {
+                    val value = map[it]!!
+                    spanProvider.addColumnSpan(it, value)
+                }
+
+                setParseTokens(tokens)
+            } catch (e: IndexOutOfBoundsException) {
+                e.printStackTrace()
+            }
+            stateController.lexCompletion()
         }
-
-        tokens.forEach {
-            map[it.second.first.column]!!.add(it.first to it.second.first.row..it.second.second.row)
-        }
-
-        map.keys.forEach {
-            val value = map[it]!!
-            spanProvider.addColumnSpan(it, value)
-        }
-
-        setParseTokens(tokens)
-
-        stateController.lexCompletion()
     }
 
     override suspend fun parse() {

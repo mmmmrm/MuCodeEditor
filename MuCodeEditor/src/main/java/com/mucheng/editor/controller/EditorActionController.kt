@@ -29,11 +29,9 @@
 
 package com.mucheng.editor.controller
 
-import android.util.Log
 import com.mucheng.editor.base.BaseController
 import com.mucheng.editor.enums.EditorAction
 import com.mucheng.editor.views.MuCodeEditor
-import java.util.*
 
 open class EditorActionController(private val controller: EditorController) : BaseController() {
 
@@ -60,7 +58,6 @@ open class EditorActionController(private val controller: EditorController) : Ba
 
     open fun push(action: EditorAction.Action) {
         clearBeforePush()
-        Log.e("Stacks", stack.toString())
         if (stackPointer - 1 < 0) {
             stack.add(action)
             clearStack()
@@ -113,6 +110,7 @@ open class EditorActionController(private val controller: EditorController) : Ba
 
     fun clear() {
         stack.clear()
+        stackPointer = 0
     }
 
 }

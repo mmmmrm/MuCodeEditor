@@ -30,24 +30,24 @@
 package com.mucheng.editor.base
 
 import android.content.Context
-import android.text.TextUtils.replace
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.PopupWindow
+import com.mucheng.editor.colorful.ChangeableTheme
 import com.mucheng.editor.common.AutoCompleteItem
 import com.mucheng.editor.controller.EditorController
 import com.mucheng.editor.simple.DefaultAutoCompleteHelper
+import java.util.concurrent.CopyOnWriteArrayList
 
 @Suppress("MemberVisibilityCanBePrivate")
 abstract class BaseAutoCompletionPanel(
     protected val context: Context,
     protected val controller: EditorController,
-) : PopupWindow(context) {
+) : PopupWindow(context), ChangeableTheme {
 
-    protected val items: MutableList<AutoCompleteItem> = ArrayList()
+    protected val items: MutableList<AutoCompleteItem> = CopyOnWriteArrayList()
 
-    protected val cacheAddedItems: MutableList<AutoCompleteItem> = ArrayList()
+    protected val cacheAddedItems: MutableList<AutoCompleteItem> = CopyOnWriteArrayList()
 
     protected var mAutoCompleteHelper: BaseAutoCompleteHelper = DefaultAutoCompleteHelper()
 
@@ -168,6 +168,8 @@ abstract class BaseAutoCompletionPanel(
         }
 
     }
+
+    abstract override fun updateTheme()
 
     abstract class AutoCompleteFilter(protected val autoCompletePanel: BaseAutoCompletionPanel) {
 

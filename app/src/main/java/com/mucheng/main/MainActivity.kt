@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     private var path: String? = null
     private lateinit var editor: MuCodeEditor
+    private var dark = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -126,6 +127,22 @@ class MainActivity : AppCompatActivity() {
                     .show()
             }
 
+            R.id.daytime -> {
+                if (dark) {
+                    controller.theme.setUseDarkColors(false)
+                    dark = false
+                    editor.updateComponent()
+                }
+            }
+
+            R.id.dark -> {
+                if (!dark) {
+                    controller.theme.setUseDarkColors(true)
+                    dark = true
+                    editor.updateComponent()
+                }
+            }
+
         }
         return super.onOptionsItemSelected(item)
     }
@@ -214,7 +231,6 @@ class MainActivity : AppCompatActivity() {
 
     @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun addText(path: String, editor: MuCodeEditor) {
-
         withContext(Dispatchers.IO) {
             val result = editor.open(assets.open(path))
             if (result.isFailure) {

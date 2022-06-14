@@ -94,14 +94,14 @@ abstract class AbstractTheme {
         return if (useDarkColor) {
             darkColors.getOrElse(token) {
                 if (mDefaultToken == null) {
-                    throw ColorNotFoundException()
+                    throw ColorNotFoundException(token)
                 }
                 darkColors[mDefaultToken]
             }!!
         } else {
             lightColors.getOrElse(token) {
                 if (mDefaultToken == null) {
-                    throw ColorNotFoundException()
+                    throw ColorNotFoundException(token)
                 }
                 lightColors[mDefaultToken]
             }!!

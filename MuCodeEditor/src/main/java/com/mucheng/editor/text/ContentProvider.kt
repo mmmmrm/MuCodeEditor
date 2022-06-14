@@ -1,6 +1,5 @@
 package com.mucheng.editor.text
 
-import android.util.Log
 import com.mucheng.editor.annotation.Inline
 import com.mucheng.editor.annotation.ThreadSafe
 import com.mucheng.editor.component.Cursor
@@ -10,8 +9,6 @@ import com.mucheng.editor.position.RangePosition
 import com.mucheng.editor.views.MuCodeEditor
 import java.util.concurrent.locks.ReadWriteLock
 import java.util.concurrent.locks.ReentrantReadWriteLock
-import kotlin.math.max
-import kotlin.math.min
 
 class ContentProvider(private val editor: MuCodeEditor, threadSafe: Boolean = true) {
 
@@ -20,6 +17,10 @@ class ContentProvider(private val editor: MuCodeEditor, threadSafe: Boolean = tr
     private val cursor = Cursor()
 
     private var lock: ReadWriteLock? = null
+
+    private var writeLocking = false
+
+    private var readLocking = false
 
     init {
         buffers.add(LineContent(""))
@@ -46,7 +47,7 @@ class ContentProvider(private val editor: MuCodeEditor, threadSafe: Boolean = tr
         }
     }
 
-    fun removeRangeLineContent(startColumn: Int, endColumn: Int) {
+    private fun removeRangeLineContent(startColumn: Int, endColumn: Int) {
         return withLocking(true) {
             buffers.removeRange(startColumn - 1, endColumn - 1)
         }
@@ -66,12 +67,50 @@ class ContentProvider(private val editor: MuCodeEditor, threadSafe: Boolean = tr
     @Inline
     private inline fun <T : Any> withLocking(write: Boolean, scope: () -> T): T {
         return if (lock != null) {
-            if (write) lock!!.writeLock().lock() else lock!!.readLock().lock()
+            if (write) {
+                writeLocking = true
+                lock!!.writeLock().lock()
+            } else {
+                readLocking = true
+                lock!!.readLock().lock()
+            }
             try {
                 scope()
             } finally {
                 // 一定要释放锁！否者就是死锁了!
-                if (write) lock!!.writeLock().unlock() else lock!!.readLock().unlock()
+                if (write) {
+                    lock!!.writeLock().unlock()
+                    writeLocking = false
+                } else {
+                    lock!!.readLock().unlock()
+                    readLocking = false
+                }
+            }
+        } else {
+            scope()
+        }
+    }
+
+    fun <T : Any> useLock(write: Boolean, scope: () -> T): T {
+        return if (lock != null) {
+            if (write) {
+                writeLocking = true
+                lock!!.writeLock().lock()
+            } else {
+                readLocking = true
+                lock!!.readLock().lock()
+            }
+            try {
+                scope()
+            } finally {
+                // 一定要释放锁！否者就是死锁了!
+                if (write) {
+                    lock!!.writeLock().unlock()
+                    writeLocking = false
+                } else {
+                    lock!!.readLock().unlock()
+                    readLocking = false
+                }
             }
         } else {
             scope()
@@ -270,6 +309,14 @@ class ContentProvider(private val editor: MuCodeEditor, threadSafe: Boolean = tr
 
         cursor.column = cursorColumn
         cursor.row = cursorRow
+    }
+
+    fun isWriting(): Boolean {
+        return writeLocking
+    }
+
+    fun isReading(): Boolean {
+        return readLocking
     }
 
 }

@@ -109,6 +109,40 @@ open class DefaultToolOptionsPanel(context: Context, controller: EditorControlle
         super.show()
     }
 
+    override fun updateTheme() {
+        val theme = controller.theme
+        val backgroundColor = theme.getColor(CodeEditorColorToken.TOOL_OPTIONS_PANEL_BACKGROUND)
+        val iconColor = theme.getColor(CodeEditorColorToken.TOOL_OPTIONS_PANEL_ICON_COLOR)
+        val textColor = theme.getColor(CodeEditorColorToken.TOOL_OPTIONS_PANEL_TEXT_COLOR)
+
+        val root: MaterialCardView = content.findViewById(R.id.root)
+        root.setBackgroundColor(backgroundColor)
+
+        val selectAllIcon: ShapeableImageView = content.findViewById(R.id.icon_select_all)
+        selectAllIcon.setColorFilter(iconColor)
+
+        val copyIcon: ShapeableImageView = content.findViewById(R.id.icon_copy)
+        copyIcon.setColorFilter(iconColor)
+
+        val pasteIcon: ShapeableImageView = content.findViewById(R.id.icon_paste)
+        pasteIcon.setColorFilter(iconColor)
+
+        val cutIcon: ShapeableImageView = content.findViewById(R.id.icon_cut)
+        cutIcon.setColorFilter(iconColor)
+
+        val selectAll: MaterialTextView = content.findViewById(R.id.select_all)
+        selectAll.setTextColor(textColor)
+
+        val copy: MaterialTextView = content.findViewById(R.id.copy)
+        copy.setTextColor(textColor)
+
+        val paste: MaterialTextView = content.findViewById(R.id.paste)
+        paste.setTextColor(textColor)
+
+        val cut: MaterialTextView = content.findViewById(R.id.cut)
+        cut.setTextColor(textColor)
+    }
+
     @SuppressLint("InflateParams")
     private fun createContentView(): View {
         val root = MaterialCardView(context)

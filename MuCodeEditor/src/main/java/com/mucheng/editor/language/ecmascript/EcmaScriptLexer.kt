@@ -34,7 +34,6 @@ import com.mucheng.editor.position.ColumnRowPosition
 
 open class EcmaScriptLexer : BaseLexer<EcmaScriptToken>() {
 
-    @Synchronized
     override fun analyze() {
         if (column > columnSize()) {
             return

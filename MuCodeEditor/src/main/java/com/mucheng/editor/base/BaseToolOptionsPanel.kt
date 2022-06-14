@@ -32,13 +32,14 @@ package com.mucheng.editor.base
 import android.content.Context
 import android.view.Gravity
 import android.widget.PopupWindow
+import com.mucheng.editor.colorful.ChangeableTheme
 import com.mucheng.editor.controller.EditorController
 import com.mucheng.editor.util.getLineHeight
 
 abstract class BaseToolOptionsPanel(
     protected val context: Context,
     protected val controller: EditorController,
-) : PopupWindow(context) {
+) : PopupWindow(context), ChangeableTheme {
 
     protected lateinit var mOnToolOptionsListener: OnToolOptionsSelectListener
 
@@ -83,5 +84,7 @@ abstract class BaseToolOptionsPanel(
             update(editor, 0, editor.height, width, height)
         }
     }
+
+    abstract override fun updateTheme()
 
 }

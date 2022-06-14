@@ -27,5 +27,7 @@
 
 package com.mucheng.editor.exceptions
 
-class ColorNotFoundException :
-    RuntimeException("Cannot found target color in HashMap")
+import com.mucheng.editor.base.BaseToken
+
+class ColorNotFoundException(token: BaseToken) :
+    RuntimeException("Cannot found target color token '${token.getColorType()}' in HashMap")

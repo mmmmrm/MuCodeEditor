@@ -58,9 +58,15 @@ open class CodeAutoCompletionPanel(
     controller: EditorController,
 ) : BaseAutoCompletionPanel(context, controller) {
 
+    private lateinit var content: View
+
     private val adapter by lazy { CodePanelAdapter() }
 
     private val lock = Mutex()
+
+    companion object {
+        private const val ROOT_CARD_ID = 1
+    }
 
     init {
         //设置默认弹出样式
@@ -80,8 +86,19 @@ open class CodeAutoCompletionPanel(
             return
         }
 
-        contentView = createContentView()
+        if (!::content.isInitialized) {
+            content = createContentView()
+            contentView = content
+        }
+
         super.show()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun updateTheme() {
+        val root: MaterialCardView = content.findViewById(ROOT_CARD_ID)
+        root.background = createPanelBackground()
+        adapter.notifyDataSetChanged()
     }
 
     private fun createPanelBackground(): GradientDrawable {
@@ -115,9 +132,11 @@ open class CodeAutoCompletionPanel(
             .also { layout ->
                 val root = MaterialCardView(context)
                 val margins = 8.dp.toInt()
+                root.id = ROOT_CARD_ID
                 root.layoutParams = LinearLayoutCompat.LayoutParams(-1, -1).apply {
                     setMargins(margins, margins, margins, margins)
                 }
+
 
                 //设置背景
                 root.background = createPanelBackground()

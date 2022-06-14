@@ -93,6 +93,27 @@
                 android:title="颜色选择器"
                 app:showAsAction="never" />
 
+            <item
+                android:id="@+id/theme"
+                android:title="主题"
+                app:showAsAction="never">
+
+                <menu>
+
+                    <item
+                        android:title="浅色主题"
+                        app:showAsAction="never"
+                        android:id="@+id/daytime"/>
+
+                    <item
+                        android:title="深色主题"
+                        app:showAsAction="never"
+                        android:id="@+id/dark"/>
+
+                </menu>
+
+            </item>
+
         </menu>
     </item>
 

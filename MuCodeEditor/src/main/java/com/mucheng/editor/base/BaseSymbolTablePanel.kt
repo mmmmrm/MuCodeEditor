@@ -32,13 +32,14 @@ package com.mucheng.editor.base
 import android.content.Context
 import android.view.Gravity
 import android.widget.PopupWindow
+import com.mucheng.editor.colorful.ChangeableTheme
 import com.mucheng.editor.controller.EditorController
 
 @Suppress("MemberVisibilityCanBePrivate")
 abstract class BaseSymbolTablePanel(
     protected val context: Context,
     protected val controller: EditorController,
-) : PopupWindow(context) {
+) : PopupWindow(context), ChangeableTheme {
 
     private val symbolTables: MutableList<Symbol> = ArrayList()
 
@@ -69,6 +70,8 @@ abstract class BaseSymbolTablePanel(
         val editor = controller.getEditor()
         update(editor, 0, editor.height, width, height)
     }
+
+    abstract override fun updateTheme()
 
     open fun show() {
         val editor = controller.getEditor()

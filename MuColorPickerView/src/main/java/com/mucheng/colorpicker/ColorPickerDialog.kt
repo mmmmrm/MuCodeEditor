@@ -82,8 +82,8 @@ open class ColorPickerDialog(context: Context, style: Int = 0) : AlertDialog(con
         val container = findViewById<LinearLayoutCompat>(R.id.container)!!
 
         val displayMetrics = context.resources.displayMetrics
-        val width = (displayMetrics.widthPixels * 0.5).toInt() - 40
-        val height = (displayMetrics.widthPixels * 0.5).toInt() - 40
+        val width = (displayMetrics.widthPixels * 0.5).toInt()
+        val height = (displayMetrics.widthPixels * 0.5).toInt()
 
         colorTextView = findViewById(R.id.color)!!
         val rgb = findViewById<MaterialTextView>(R.id.rgb)!!

@@ -36,41 +36,45 @@ import com.mucheng.editor.base.BaseToken
  * BaseToken 详见：
  * @see com.mucheng.editor.base.BaseToken
  * */
-class CodeEditorColorToken private constructor() : BaseToken(null, "") {
+class CodeEditorColorToken private constructor(description: String) : BaseToken(null, description) {
 
     companion object {
 
-        val DEFAULT_COLOR = CodeEditorColorToken() // 默认颜色，也就是缺省时的颜色
-        val BACKGROUND_COLOR = CodeEditorColorToken() // 编辑器背景色
-        val IDENTIFIER_COLOR = CodeEditorColorToken() // 标识符颜色
-        val SELECT_BACKGROUND_COLOR = CodeEditorColorToken() // 选中背景颜色
+        val DEFAULT_COLOR = CodeEditorColorToken("DEFAULT_COLOR") // 默认颜色，也就是缺省时的颜色
+        val BACKGROUND_COLOR = CodeEditorColorToken("BACKGROUND_COLOR") // 编辑器背景色
+        val IDENTIFIER_COLOR = CodeEditorColorToken("IDENTIFIER_COLOR") // 标识符颜色
+        val SELECT_BACKGROUND_COLOR = CodeEditorColorToken("SELECT_BACKGROUND_COLOR") // 选中背景颜色
 
-        val CURSOR_COLOR = CodeEditorColorToken() // 光标颜色
-        val LINE_NUMBER_COLOR = CodeEditorColorToken() // 行号颜色
-        val DIVIDING_LINE_COLOR = CodeEditorColorToken() // 分割线颜色
-        val HANDLE_TEXT_BACKGROUND_COLOR = CodeEditorColorToken() // 选中时处理文本的角标的颜色
+        val CURSOR_COLOR = CodeEditorColorToken("CURSOR_COLOR") // 光标颜色
+        val LINE_NUMBER_COLOR = CodeEditorColorToken("LINE_NUMBER_COLOR") // 行号颜色
+        val DIVIDING_LINE_COLOR = CodeEditorColorToken("DIVIDING_LINE_COLOR") // 分割线颜色
+        val HANDLE_TEXT_BACKGROUND_COLOR =
+            CodeEditorColorToken("HANDLE_TEXT_BACKGROUND_COLOR") // 选中时处理文本的角标的颜色
 
-        val KEYWORD_COLOR = CodeEditorColorToken() // 关键字颜色
-        val NUMERICAL_VALUE_COLOR = CodeEditorColorToken() // 数值颜色
-        val STRING_COLOR = CodeEditorColorToken() // 字符串颜色
-        val COMMENT_COLOR = CodeEditorColorToken() // 注释颜色
-        val SYMBOL_COLOR = CodeEditorColorToken()
-        val SPECIAL_COLOR = CodeEditorColorToken() // 特殊（值）颜色
+        val KEYWORD_COLOR = CodeEditorColorToken("KEYWORD_COLOR") // 关键字颜色
+        val NUMERICAL_VALUE_COLOR = CodeEditorColorToken("NUMERICAL_VALUE_COLOR") // 数值颜色
+        val STRING_COLOR = CodeEditorColorToken("STRING_COLOR") // 字符串颜色
+        val COMMENT_COLOR = CodeEditorColorToken("COMMENT_COLOR") // 注释颜色
+        val SYMBOL_COLOR = CodeEditorColorToken("SYMBOL_COLOR")
+        val SPECIAL_COLOR = CodeEditorColorToken("SPECIAL_COLOR") // 特殊（值）颜色
 
-        val AUTO_COMPLETE_PANEL_BACKGROUND = CodeEditorColorToken() // 自动补全栏颜色
-        val AUTO_COMPLETE_PANEL_ICON_COLOR = CodeEditorColorToken()
-        val AUTO_COMPLETE_PANEL_TITLE_COLOR = CodeEditorColorToken()
-        val AUTO_COMPLETE_PANEL_SIMPLE_DESCRIPTION_COLOR = CodeEditorColorToken()
-        val AUTO_COMPLETE_PANEL_TYPE_COLOR = CodeEditorColorToken()
+        val AUTO_COMPLETE_PANEL_BACKGROUND =
+            CodeEditorColorToken("AUTO_COMPLETE_PANEL_BACKGROUND") // 自动补全栏颜色
+        val AUTO_COMPLETE_PANEL_ICON_COLOR = CodeEditorColorToken("AUTO_COMPLETE_PANEL_ICON_COLOR")
+        val AUTO_COMPLETE_PANEL_TITLE_COLOR =
+            CodeEditorColorToken("AUTO_COMPLETE_PANEL_TITLE_COLOR")
+        val AUTO_COMPLETE_PANEL_SIMPLE_DESCRIPTION_COLOR =
+            CodeEditorColorToken("AUTO_COMPLETE_PANEL_SIMPLE_DESCRIPTION_COLOR")
+        val AUTO_COMPLETE_PANEL_TYPE_COLOR = CodeEditorColorToken("AUTO_COMPLETE_PANEL_TYPE_COLOR")
 
-        val TOOL_OPTIONS_PANEL_BACKGROUND = CodeEditorColorToken()
-        val TOOL_OPTIONS_PANEL_ICON_COLOR = CodeEditorColorToken()
-        val TOOL_OPTIONS_PANEL_TEXT_COLOR = CodeEditorColorToken()
+        val TOOL_OPTIONS_PANEL_BACKGROUND = CodeEditorColorToken("TOOL_OPTIONS_PANEL_BACKGROUND")
+        val TOOL_OPTIONS_PANEL_ICON_COLOR = CodeEditorColorToken("TOOL_OPTIONS_PANEL_ICON_COLOR")
+        val TOOL_OPTIONS_PANEL_TEXT_COLOR = CodeEditorColorToken("TOOL_OPTIONS_PANEL_TEXT_COLOR")
 
-        val SYMBOL_TABLE_PANEL_BACKGROUND = CodeEditorColorToken()
-        val SYMBOL_TABLE_TEXT_COLOR = CodeEditorColorToken()
+        val SYMBOL_TABLE_PANEL_BACKGROUND = CodeEditorColorToken("SYMBOL_TABLE_PANEL_BACKGROUND")
+        val SYMBOL_TABLE_TEXT_COLOR = CodeEditorColorToken("SYMBOL_TABLE_TEXT_COLOR")
 
-        val USER_DEFINE_COLOR = CodeEditorColorToken() // 用户定义的颜色
+        val USER_DEFINE_COLOR = CodeEditorColorToken("USER_DEFINE_COLOR") // 用户定义的颜色
     }
 
 }
