@@ -34,6 +34,8 @@
 
 通过 SymbolTablePanel 实现符号快速插入
 
+通过 ColorPickerDialog 选取颜色（有 HSV，Hex，ARGB）三种
+
 ## 样式
 
 你可以自定义样式，对于统一的操作我们使用 Controller
