@@ -96,6 +96,11 @@ open class CodeAutoCompletionPanel(
 
     @SuppressLint("NotifyDataSetChanged")
     override fun updateTheme() {
+        if (!::content.isInitialized) {
+            content = createContentView()
+            contentView = content
+        }
+
         val root: MaterialCardView = content.findViewById(ROOT_CARD_ID)
         root.background = createPanelBackground()
         adapter.notifyDataSetChanged()
