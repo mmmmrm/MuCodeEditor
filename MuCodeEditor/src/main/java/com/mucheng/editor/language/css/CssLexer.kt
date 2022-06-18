@@ -219,7 +219,7 @@ class CssLexer : BaseLexer<CssToken>() {
                 ColumnRowPosition(column, nextEnd)
             )
             addToken(
-                CssToken.MINUS,
+                CssToken.COLON,
                 ColumnRowPosition(column, nextEnd),
                 ColumnRowPosition(column, nextEnd + 1)
             )
@@ -288,6 +288,7 @@ class CssLexer : BaseLexer<CssToken>() {
             '+' to CssToken.PLUS,
             '*' to CssToken.MULTI,
             '/' to CssToken.DIV,
+            ':' to CssToken.COLON,
             '!' to CssToken.NOT,
             '%' to CssToken.MOD,
             '^' to CssToken.XOR,

@@ -12,6 +12,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
 import android.widget.OverScroller
+import android.widget.Toast
 import com.mucheng.editor.annotation.Suspend
 import com.mucheng.editor.annotation.UnsupportedUserUsage
 import com.mucheng.editor.base.ColumnRowIndexer
@@ -111,6 +112,8 @@ open class MuCodeEditor @JvmOverloads constructor(
         text.replace("\r\n", "\n").split("\n").forEach {
             mContentProvider.addColumnContent(it)
         }
+
+        scrollToColumn(1, 0)
 
         //mController.style.setCursorAnimation(animation, false)
         // 通知需要进行 Rescan
@@ -345,7 +348,7 @@ open class MuCodeEditor @JvmOverloads constructor(
         return ""
     }
 
-    open fun insert(text: String) {
+    open fun insertText(text: String) {
         mInputConnection.commitText(text, 0, false)
     }
 
@@ -611,6 +614,10 @@ open class MuCodeEditor @JvmOverloads constructor(
         mController.autoCompletionPanel?.updateTheme()
         mController.toolOptionsPanel.updateTheme()
         mController.symbolTablePanel?.updateTheme()
+    }
+
+    fun relex() {
+        mController.state.lex(mLexCoroutine)
     }
 
 }

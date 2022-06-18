@@ -34,7 +34,7 @@ import com.mucheng.editor.position.ColumnRowPosition
 @Suppress("MemberVisibilityCanBePrivate", "LeakingThis")
 abstract class BaseLexer<T : BaseToken> {
 
-    protected val mTokens: MutableList<Pair<T, Pair<ColumnRowPosition, ColumnRowPosition>>> =
+    protected val mTokens: MutableList<Triple<T, ColumnRowPosition, ColumnRowPosition>> =
         ArrayList()
 
     protected lateinit var sources: List<CharSequence>
@@ -67,7 +67,7 @@ abstract class BaseLexer<T : BaseToken> {
     }
 
     protected open fun addToken(token: T, startPos: ColumnRowPosition, endPos: ColumnRowPosition) {
-        mTokens.add(token to (startPos to endPos))
+        mTokens.add(Triple(token, startPos, endPos))
     }
 
     protected open fun getChar() {
@@ -99,8 +99,31 @@ abstract class BaseLexer<T : BaseToken> {
         row = 0
     }
 
-    open fun getTokens(): List<Pair<T, Pair<ColumnRowPosition, ColumnRowPosition>>> {
+    open fun getTokens(): List<Triple<T, ColumnRowPosition, ColumnRowPosition>> {
         return mTokens
+    }
+
+    open fun toColumnTokens(): MutableList<MutableList<Pair<BaseToken, IntRange>>> {
+        val buffer: MutableList<MutableList<Pair<BaseToken, IntRange>>> = ArrayList()
+        buffer.add(ArrayList())
+
+        for (triple in getTokens().toList()) {
+
+            val token = triple.first
+            val column = triple.second.column
+            val range = triple.second.row..triple.third.row
+            if (buffer.size == column) {
+                buffer.last().add(token to range)
+            } else if (column > buffer.size) {
+                while (column > buffer.size) {
+                    buffer.add(ArrayList())
+                }
+
+                buffer.last().add(token to range)
+            }
+        }
+
+        return buffer
     }
 
     open fun isNotRowEOF(): Boolean {
@@ -109,10 +132,6 @@ abstract class BaseLexer<T : BaseToken> {
 
     open fun isRowEOF(): Boolean {
         return row >= rowSize()
-    }
-
-    open fun isNearRowEOF(): Boolean {
-        return row + 1 == rowSize()
     }
 
     open fun isWhitespace(): Boolean {

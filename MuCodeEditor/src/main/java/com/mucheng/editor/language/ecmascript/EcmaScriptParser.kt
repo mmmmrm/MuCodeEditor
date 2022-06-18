@@ -29,92 +29,82 @@
 
 package com.mucheng.editor.language.ecmascript
 
-import com.mucheng.editor.base.BaseAutoCompleteHelper
 import com.mucheng.editor.base.BaseParser
-import com.mucheng.editor.enums.CodeEditorColorToken
-import com.mucheng.editor.position.ColumnRowPosition
-import java.nio.file.Files.find
 
 open class EcmaScriptParser : BaseParser<EcmaScriptToken>() {
 
+    override var eofToken: EcmaScriptToken = EcmaScriptToken.EOF
+
     override fun parse() {
-        var lastToken: EcmaScriptToken? = null
-        var lastRange: Pair<ColumnRowPosition, ColumnRowPosition>? = null
-        mSources.forEachIndexed { index, pair ->
-            val token = pair.first
-            val range = pair.second
-
-            this.index = index
-            if (lastToken != null) {
-                handleVariable(lastToken!!, lastRange!!, token, range)
-            }
-
-            lastToken = token
-            lastRange = range
-        }
-    }
-
-    private fun handleVariable(
-        lastToken: EcmaScriptToken,
-        lastRange: Pair<ColumnRowPosition, ColumnRowPosition>,
-        token: EcmaScriptToken,
-        range: Pair<ColumnRowPosition, ColumnRowPosition>,
-    ) {
-        /*
-        * var 的判定如下
-        * var variable (=expr)
-        * */
-        if (equalsSingleLine(lastRange, range) &&
-            (lastToken == EcmaScriptToken.VAR ||
-                    lastToken == EcmaScriptToken.LET) &&
-            token == EcmaScriptToken.IDENTIFIER
-        ) {
-            addNeededToken(BaseAutoCompleteHelper.VARIABLE, token, range.first, range.second)
+        if (column > columnSize()) {
             return
         }
 
-        /*
-        * const 判定如下
-        * const name = expr(expr ∉ Symbol)
-        * */
-        if (equalsSingleLine(lastRange, range) &&
-            lastToken == EcmaScriptToken.CONST &&
-            token == EcmaScriptToken.IDENTIFIER &&
-            findOffsetToken(1) == EcmaScriptToken.EQUALS &&
-            findOffsetToken(2) != null &&
-            findOffsetToken(2) != EcmaScriptToken.SEMICOLON
-        ) {
-            addNeededToken(BaseAutoCompleteHelper.VARIABLE, token, range.first, range.second)
-        }
+        while (true) {
 
-        /**
-         * 满足以下条件判断为 function
-         * function identifier(...){
-         * ...
-         * }
-         * */
-        if (equalsSingleLine(lastRange, range) &&
-            lastToken == EcmaScriptToken.FUNCTION &&
-            token == EcmaScriptToken.IDENTIFIER &&
-            findOffsetToken(1) == EcmaScriptToken.LEFT_PARENTHESIS &&
-            find(2, EcmaScriptToken.RIGHT_PARENTHESIS, true).run {
-                if (this != -1) {
-                    val offset = this
-                    findOffsetToken(offset + 1) == EcmaScriptToken.LEFT_BRACE &&
-                            (find(offset + 2, EcmaScriptToken.RIGHT_BRACE, true) != -1)
-                } else {
-                    false
-                }
+            if (column > columnSize()) {
+                return
             }
-        ) {
-            addNeededToken(BaseAutoCompleteHelper.FUNCTION, token, range.first, range.second)
-            return
+
+            scannedColumnSource = sources[column - 1]
+
+            if (index >= indexSize()) {
+                ++column
+                index = 0
+                continue
+            }
+
+            scannedColumnSource = sources[column - 1]
+            getToken()
+
+            if (parseVariableStatement()) continue
+
+            ++index
         }
     }
 
-    override fun setSources(sources: List<Pair<EcmaScriptToken, Pair<ColumnRowPosition, ColumnRowPosition>>>) {
-        // Parse 阶段 Token 不应包含 WHITESPACE
-        super.setSources(sources.filter { it.first != EcmaScriptToken.WHITESPACE })
+    private fun parseVariableStatement(): Boolean {
+        if (scannedToken != EcmaScriptToken.VAR && scannedToken != EcmaScriptToken.LET && scannedToken != EcmaScriptToken.CONST) {
+            return false
+        }
+
+        val startIndex = index
+        yyToken()
+        // 规定变量名必须是标识符，不是则编译错误
+        if (scannedToken != EcmaScriptToken.IDENTIFIER) {
+
+            addCompileError("Unexpected token type '$scannedToken'", scannedRange)
+            return true
+        }
+
+        // var identifier[=expr]
+        if (scannedToken == EcmaScriptToken.VAR) {
+
+        }
+
+        // let identifier[=expr]
+        if (scannedToken == EcmaScriptToken.LET) {
+
+        }
+
+        // const identifier=expr
+        if (scannedToken == EcmaScriptToken.CONST) {
+
+        }
+        return false
+    }
+
+    override fun setSources(sources: List<List<Pair<EcmaScriptToken, IntRange>>>) {
+        super.setSources(sources.map {
+            it.filter { pair ->
+                val token = pair.first
+                token != EcmaScriptToken.WHITESPACE &&
+                        token != EcmaScriptToken.SINGLE_COMMENT &&
+                        token != EcmaScriptToken.MULTI_COMMENT_START &&
+                        token != EcmaScriptToken.MULTI_COMMENT_PART &&
+                        token != EcmaScriptToken.MULTI_COMMENT_END
+            }
+        })
     }
 
 }

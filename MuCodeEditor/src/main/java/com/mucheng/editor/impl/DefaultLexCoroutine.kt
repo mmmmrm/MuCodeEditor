@@ -29,6 +29,7 @@
 
 package com.mucheng.editor.impl
 
+import android.util.Log
 import com.mucheng.editor.base.BaseToken
 import com.mucheng.editor.colorful.LexInterface
 import com.mucheng.editor.common.AutoCompleteItem
@@ -58,30 +59,13 @@ open class DefaultLexCoroutine(private val editor: MuCodeEditor) : LexInterface 
         contentProvider.useLock(true) {
             try {
                 val lexer = controller.language.getLexer()!!
-                lexer.clearAll()
                 lexer.setSources(contentProvider.getLineContents().toList())
                 lexer.analyze()
 
-                val tokens = lexer.getTokens().toList()
-                val map = hashMapOf<Int, OpenArrayList<Pair<BaseToken, IntRange>>>()
-                lexer.clearAll()
+                val columnTokens = lexer.toColumnTokens()
+                spanProvider.setTokens(columnTokens)
 
-                var workColumn = 1
-                while (workColumn <= contentProvider.columnCount) {
-                    map[workColumn] = OpenArrayList()
-                    ++workColumn
-                }
-
-                tokens.forEach {
-                    map[it.second.first.column]!!.add(it.first to it.second.first.row..it.second.second.row)
-                }
-
-                map.keys.forEach {
-                    val value = map[it]!!
-                    spanProvider.addColumnSpan(it, value)
-                }
-
-                setParseTokens(tokens)
+                setParseTokens(columnTokens)
             } catch (e: IndexOutOfBoundsException) {
                 e.printStackTrace()
             }
@@ -99,35 +83,23 @@ open class DefaultLexCoroutine(private val editor: MuCodeEditor) : LexInterface 
 
         val parser = controller.language.getParser()!!
         parser.parse()
-
-        val neededTokens = parser.getNeededToken()
-        val contentProvider = editor.getContentProvider()
-
-        // 添加进去
-        neededTokens.forEach {
-            try {
-                val type = it.first
-                val range = it.second.second
-                val column = range.first.column
-                val startRow = range.first.row
-                val endRow = range.second.row
-                val text = contentProvider.getLineContent(column).substring(startRow, endRow)
-                panel.addDefinedAutoCompleteItem(AutoCompleteItem(text, type))
-            } catch (e: IndexOutOfBoundsException) {
-            }
+        parser.getCompileError().forEach {
+            val column = it.first
+            val text = it.second
+            val range = it.third
+            Log.e("SyntaxError", "$text (Script#$column)")
         }
 
         panel.notifyAutoCompleteItemChanged()
     }
 
-    private fun setParseTokens(token: List<Pair<BaseToken, Pair<ColumnRowPosition, ColumnRowPosition>>>) {
+    private fun setParseTokens(token: MutableList<MutableList<Pair<BaseToken, IntRange>>>) {
         if (controller.language.getParser() == null) {
             return
         }
 
         val parser = controller.language.getParser()!!
-        parser.clearAll()
-        parser.setSources(token as List<Pair<Nothing, Pair<ColumnRowPosition, ColumnRowPosition>>>)
+        parser.setSources(token as List<List<Pair<Nothing, IntRange>>>)
     }
 
     override fun start() {

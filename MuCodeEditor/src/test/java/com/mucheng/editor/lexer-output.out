@@ -1,0 +1,10 @@
+Token:: `IDENTIFIER` > (1, 0..7) -> #element
+Token:: `LEFT_BRACE` > (1, 9..9) -> {
+Token:: `ATTRIBUTE` > (2, 4..9) -> margin
+Token:: `COLON` > (2, 10..10) -> :
+Token:: `DIGIT` > (2, 12..15) -> 10px
+Token:: `SEMICOLON` > (2, 16..16) -> ;
+Token:: `COMMENT` > (2, 18..45) -> /* set margins of element */
+Token:: `RIGHT_BRACE` > (3, 0..0) -> }
+Token:: `COMMENT` > (5, 0..8) -> /* Add */
+Token:: `IDENTIFIER` > (6, 0..6) -> Removed

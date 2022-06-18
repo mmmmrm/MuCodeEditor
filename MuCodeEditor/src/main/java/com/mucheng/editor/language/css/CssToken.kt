@@ -31,40 +31,44 @@ package com.mucheng.editor.language.css
 
 import com.mucheng.editor.base.BaseToken
 import com.mucheng.editor.enums.CodeEditorColorToken
+import com.mucheng.editor.language.ecmascript.EcmaScriptToken
 
 open class CssToken(type: CodeEditorColorToken?, value: String) : BaseToken(type, value) {
 
     companion object {
         val WHITESPACE = CssToken(CodeEditorColorToken.KEYWORD_COLOR, "WHITESPACE")
-        val COMMENT = CssToken(CodeEditorColorToken.COMMENT_COLOR, "/* Comment */")
-        val STRING = CssToken(CodeEditorColorToken.STRING_COLOR, "\"String\"")
+        val COMMENT = CssToken(CodeEditorColorToken.COMMENT_COLOR, "COMMENT")
+        val STRING = CssToken(CodeEditorColorToken.STRING_COLOR, "STRING")
         val DIGIT = CssToken(CodeEditorColorToken.NUMERICAL_VALUE_COLOR, "DIGIT")
-        val ATTRIBUTE = CssToken(CodeEditorColorToken.KEYWORD_COLOR, "attribute:")
-        val IDENTIFIER = CssToken(CodeEditorColorToken.IDENTIFIER_COLOR, "identifier")
+        val ATTRIBUTE = CssToken(CodeEditorColorToken.KEYWORD_COLOR, "ATTRIBUTE")
+        val IDENTIFIER = CssToken(CodeEditorColorToken.IDENTIFIER_COLOR, "IDENTIFIER")
 
-        val PLUS = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "+")
-        val MINUS = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "-")
-        val MULTI = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "*")
-        val DIV = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "/")
-        val NOT = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "!")
-        val MOD = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "%")
-        val XOR = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "^")
-        val AND = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "&")
-        val QUESTION = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "?")
-        val COMP = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "~")
-        val DOT = CssToken(CodeEditorColorToken.SYMBOL_COLOR, ".")
-        val COMMA = CssToken(CodeEditorColorToken.SYMBOL_COLOR, ",")
-        val SEMICOLON = CssToken(CodeEditorColorToken.SYMBOL_COLOR, ";")
-        val EQUALS = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "=")
-        val LEFT_PARENTHESIS = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "(")
-        val RIGHT_PARENTHESIS = CssToken(CodeEditorColorToken.SYMBOL_COLOR, ")")
-        val LEFT_BRACKET = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "[")
-        val RIGHT_BRACKET = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "]")
-        val LEFT_BRACE = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "{")
-        val RIGHT_BRACE = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "}")
-        val OR = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "|")
-        val LESS_THAN = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "<")
-        val MORE_THAN = CssToken(CodeEditorColorToken.SYMBOL_COLOR, ">")
+        val PLUS = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "PLUS") // '+'
+        val MULTI = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "MULTI") // '*'
+        val DIV = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "DIV") // '/'
+        val COLON = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "COLON") // ':'
+        val NOT = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "NOT") // '!'
+        val MOD = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "MOD") // '%'
+        val XOR = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "XOR") // '^'
+        val AND = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "AND") // '&'
+        val QUESTION = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "QUESTION") // '?'
+        val COMP = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "COMP") // '~'
+        val DOT = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "DOT") // '.'
+        val COMMA = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "COMMA") // ','
+        val SEMICOLON = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "SEMICOLON") // ';'
+        val EQUALS = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "EQUALS") // '='
+        val LEFT_PARENTHESIS =
+            CssToken(CodeEditorColorToken.SYMBOL_COLOR, "LEFT_PARENTHESIS") // '('
+        val RIGHT_PARENTHESIS =
+            CssToken(CodeEditorColorToken.SYMBOL_COLOR, "RIGHT_PARENTHESIS") // ')'
+        val LEFT_BRACKET = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "LEFT_BRACKET") // '['
+        val RIGHT_BRACKET =
+            CssToken(CodeEditorColorToken.SYMBOL_COLOR, "RIGHT_BRACKET") // ']'
+        val LEFT_BRACE = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "LEFT_BRACE") // '{'
+        val RIGHT_BRACE = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "RIGHT_BRACE") // '}'
+        val OR = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "OR") // '|'
+        val LESS_THAN = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "LESS_THAN") // '<'
+        val MORE_THAN = CssToken(CodeEditorColorToken.SYMBOL_COLOR, "MORE_THAN") // '>'
 
     }
 

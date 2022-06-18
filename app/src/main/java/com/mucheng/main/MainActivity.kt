@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private var language = "html"
+    private var language = "es"
     private lateinit var ecmaScriptLanguage: EcmaScriptLanguage
     private lateinit var htmlLanguage: HtmlLanguage
     private lateinit var cssLanguage: CssLanguage
@@ -46,8 +46,8 @@ class MainActivity : AppCompatActivity() {
 
         editor.getController().apply {
             setEnabled(true)
-            htmlLanguage = HtmlLanguage(this)
-            setLanguage(htmlLanguage)
+            ecmaScriptLanguage = EcmaScriptLanguage(this)
+            setLanguage(ecmaScriptLanguage)
             setDisplayDividingLine(false)
             theme.setUseDarkColors(true)
         }.style.apply {
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
             setTypefaceFromAssets(this@MainActivity, "font/HarmonyOS-Sans-Regular.ttf")
         }
 
-        openHtml()
+        openES()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

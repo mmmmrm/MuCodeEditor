@@ -29,9 +29,9 @@
 
 package com.mucheng.editor.language.html
 
-import android.text.Html
 import com.mucheng.editor.base.BaseToken
 import com.mucheng.editor.enums.CodeEditorColorToken
+import com.mucheng.editor.language.ecmascript.EcmaScriptToken
 
 @Suppress("SpellCheckingInspection")
 class HtmlToken(type: CodeEditorColorToken?, value: String) : BaseToken(type, value) {
@@ -41,33 +41,37 @@ class HtmlToken(type: CodeEditorColorToken?, value: String) : BaseToken(type, va
         val ATTRIBUTE = HtmlToken(CodeEditorColorToken.NUMERICAL_VALUE_COLOR, "ATTRIBUTE")
         val ELEMENT_NAME = HtmlToken(CodeEditorColorToken.KEYWORD_COLOR, "ELEMENT_NAME")
         val WHITESPACE = HtmlToken(CodeEditorColorToken.KEYWORD_COLOR, "WHITESPACE")
-        val DOCTYPE = HtmlToken(CodeEditorColorToken.NUMERICAL_VALUE_COLOR, "<!DOCTYPE html>")
-        val COMMENT = HtmlToken(CodeEditorColorToken.COMMENT_COLOR, "<!-- Comment -->")
-        val STRING = HtmlToken(CodeEditorColorToken.STRING_COLOR, "\"String\"")
+        val DOCTYPE = HtmlToken(CodeEditorColorToken.NUMERICAL_VALUE_COLOR, "DOCTYPE")
+        val COMMENT = HtmlToken(CodeEditorColorToken.COMMENT_COLOR, "COMMENT")
+        val STRING = HtmlToken(CodeEditorColorToken.STRING_COLOR, "STRING")
 
-        val PLUS = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "+")
-        val MINUS = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "-")
-        val MULTI = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "*")
-        val DIV = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "/")
-        val NOT = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "!")
-        val MOD = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "%")
-        val XOR = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "^")
-        val AND = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "&")
-        val QUESTION = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "?")
-        val COMP = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "~")
-        val DOT = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, ".")
-        val COMMA = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, ",")
-        val SEMICOLON = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, ";")
-        val EQUALS = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "=")
-        val LEFT_PARENTHESIS = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "(")
-        val RIGHT_PARENTHESIS = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, ")")
-        val LEFT_BRACKET = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "[")
-        val RIGHT_BRACKET = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "]")
-        val LEFT_BRACE = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "{")
-        val RIGHT_BRACE = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "}")
-        val OR = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "|")
-        val LESS_THAN = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "<")
-        val MORE_THAN = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, ">")
+        val PLUS = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "PLUS") // '+'
+        val MINUS = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "MINUS") // '-'
+        val MULTI = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "MULTI") // '*'
+        val DIV = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "DIV") // '/'
+        val COLON = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "COLON") // ':'
+        val NOT = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "NOT") // '!'
+        val MOD = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "MOD") // '%'
+        val XOR = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "XOR") // '^'
+        val AND = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "AND") // '&'
+        val QUESTION = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "QUESTION") // '?'
+        val COMP = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "COMP") // '~'
+        val DOT = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "DOT") // '.'
+        val COMMA = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "COMMA") // ','
+        val SEMICOLON = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "SEMICOLON") // ';'
+        val EQUALS = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "EQUALS") // '='
+        val LEFT_PARENTHESIS =
+            HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "LEFT_PARENTHESIS") // '('
+        val RIGHT_PARENTHESIS =
+            HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "RIGHT_PARENTHESIS") // ')'
+        val LEFT_BRACKET = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "LEFT_BRACKET") // '['
+        val RIGHT_BRACKET =
+            HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "RIGHT_BRACKET") // ']'
+        val LEFT_BRACE = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "LEFT_BRACE") // '{'
+        val RIGHT_BRACE = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "RIGHT_BRACE") // '}'
+        val OR = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "OR") // '|'
+        val LESS_THAN = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "LESS_THAN") // '<'
+        val MORE_THAN = HtmlToken(CodeEditorColorToken.SYMBOL_COLOR, "MORE_THAN") // '>'
 
     }
 

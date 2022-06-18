@@ -1,0 +1,5 @@
+# 用于实现 Parser 解析的思路文件
+# [] 表示可选，也就是可以没有
+
+expr: factor [(PLUS|MINUS|MULTI|DIV) factor]
+factor: Int

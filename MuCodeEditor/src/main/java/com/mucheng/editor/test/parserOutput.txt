@@ -1,3 +1,0 @@
-<Token:: V to (1, 4..4) >
-<Token:: V to (2, 6..6) >
-<Token:: F to (3, 9..12) >

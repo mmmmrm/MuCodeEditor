@@ -499,6 +499,7 @@ open class EcmaScriptLexer : BaseLexer<EcmaScriptToken>() {
             '-' to EcmaScriptToken.MINUS,
             '*' to EcmaScriptToken.MULTI,
             '/' to EcmaScriptToken.DIV,
+            ':' to EcmaScriptToken.COLON,
             '!' to EcmaScriptToken.NOT,
             '%' to EcmaScriptToken.MOD,
             '^' to EcmaScriptToken.XOR,

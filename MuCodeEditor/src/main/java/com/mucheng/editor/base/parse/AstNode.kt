@@ -27,36 +27,17 @@
  *
  */
 
-package com.mucheng.editor.test
+package com.mucheng.editor.base.parse
 
-import com.mucheng.editor.language.css.CssLexer
-import com.mucheng.editor.language.css.CssToken
-import java.io.File
-import java.io.StringReader
+import com.mucheng.editor.base.BaseToken
 
-fun main() {
-    val code =
-        File("D:\\AndroidProjects\\MuCodeEditorExample\\MuCodeEditor\\src\\main\\java\\com\\mucheng\\editor\\test\\test.css").bufferedReader()
-            .readText().split("\r\n").toList()
-    val lexer = CssLexer()
-    lexer.setSources(code)
-    lexer.analyze()
+@Suppress("SelfReferenceConstructorParameter")
+abstract class AstNode(
+    var left: AstNode? = null,
+    val node: BaseToken? = null,
+    var right: AstNode? = null,
+) {
 
-    val tokens = lexer.getTokens()
-        .filter { it.first != CssToken.WHITESPACE }
-        .joinToString(separator = "\n") {
-            val second = it.second
-            "<Token:: ${it.first} to (${second.first.column}, ${second.first.row}..${second.second.row - 1}) >"
-        }
-    val stringReader = StringReader(tokens)
-    val bufferWriter =
-        File("D:\\AndroidProjects\\MuCodeEditorExample\\MuCodeEditor\\src\\main\\java\\com\\mucheng\\editor\\test\\lexerOutput.txt").bufferedWriter()
-    val buffer = CharArray(2048)
-    var flag: Int
-    bufferWriter.use {
-        while (stringReader.read(buffer).also { flag = it } != -1) {
-            bufferWriter.write(buffer, 0, flag)
-            bufferWriter.flush()
-        }
-    }
+    abstract fun visit()
+
 }

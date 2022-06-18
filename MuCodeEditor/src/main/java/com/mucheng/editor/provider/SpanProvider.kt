@@ -37,48 +37,28 @@ import com.mucheng.editor.views.MuCodeEditor
 @Suppress("MemberVisibilityCanBePrivate")
 class SpanProvider(private val editor: MuCodeEditor) {
 
-    private val spans: OpenArrayList<MutableList<out Pair<BaseToken, IntRange>>> = OpenArrayList()
+    private val spans: MutableList<MutableList<Pair<BaseToken, IntRange>>> = ArrayList()
 
     val size: Int
         get() {
             return spans.size
         }
 
-    fun addColumnSpan(span: MutableList<out Pair<BaseToken, IntRange>>) {
-        spans.add(span)
-    }
-
-    fun addColumnSpan(column: Int, span: MutableList<out Pair<BaseToken, IntRange>>) {
-        if (column == size) {
-            addColumnSpan(span)
-            return
-        }
-
-        spans.add(column - 1, span)
-    }
-
-    fun getColumnSpan(column: Int): MutableList<out Pair<BaseToken, IntRange>> {
-        return spans.getOrNull(column - 1) ?: mutableListOf()
+    fun getColumnSpan(column: Int): List<Pair<BaseToken, IntRange>> {
+        return spans.getOrNull(column - 1) ?: emptyList()
     }
 
     fun clear() {
         spans.clear()
     }
 
-    fun removeColumn(column: Int) {
-        spans.removeAt(column - 1)
-    }
-
-    fun removeColumns(startColumn: Int, endColumn: Int) {
-        if (startColumn == endColumn) {
-            removeColumn(startColumn)
-            return
-        }
-        spans.removeRange(startColumn - 1, endColumn - 1)
-    }
-
     override fun toString(): String {
         return spans.toString()
+    }
+
+    fun setTokens(columnTokens: MutableList<MutableList<Pair<BaseToken, IntRange>>>) {
+        spans.clear()
+        spans.addAll(columnTokens)
     }
 
 }

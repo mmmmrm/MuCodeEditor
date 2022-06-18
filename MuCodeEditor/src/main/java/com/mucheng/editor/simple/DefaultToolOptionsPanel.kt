@@ -34,6 +34,7 @@ import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Toast
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
@@ -147,7 +148,6 @@ open class DefaultToolOptionsPanel(context: Context, controller: EditorControlle
     private fun createContentView(): View {
         val root = MaterialCardView(context)
         root.setBackgroundColor(Color.TRANSPARENT)
-
         root.addView(LayoutInflater.from(context)
             .inflate(R.layout.layout_tool_options_panel_item, root, false))
         return root
@@ -157,12 +157,20 @@ open class DefaultToolOptionsPanel(context: Context, controller: EditorControlle
         val editor = controller.getEditor()
         when (rootId) {
             R.id.select_all_root -> editor.selectAll()
-            R.id.copy_root -> editor.copySelectionText()
-            R.id.paste_root -> editor.insert(editor.getClipboardText())
+            R.id.copy_root -> {
+                editor.copySelectionText()
+                editor.post {
+                    Toast.makeText(context, "复制成功", Toast.LENGTH_SHORT).show()
+                }
+            }
+            R.id.paste_root -> editor.insertText(editor.getClipboardText())
             R.id.cut_root -> {
                 editor.copySelectionText()
                 val textInputConnection = editor.getTextInputConnection()
                 textInputConnection.deleteSurroundingText(0, 0)
+                editor.post {
+                    Toast.makeText(context, "剪切成功", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

@@ -356,6 +356,7 @@ class HtmlLexer : BaseLexer<HtmlToken>() {
             '-' to HtmlToken.MINUS,
             '*' to HtmlToken.MULTI,
             '/' to HtmlToken.DIV,
+            ':' to HtmlToken.COLON,
             '!' to HtmlToken.NOT,
             '%' to HtmlToken.MOD,
             '^' to HtmlToken.XOR,

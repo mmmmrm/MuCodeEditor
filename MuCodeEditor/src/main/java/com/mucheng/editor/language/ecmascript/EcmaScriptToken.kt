@@ -33,18 +33,23 @@ import com.mucheng.editor.base.BaseToken
 import com.mucheng.editor.enums.CodeEditorColorToken
 
 @Suppress("MemberVisibilityCanBePrivate")
-class EcmaScriptToken private constructor(type: CodeEditorColorToken, value: String) : BaseToken(type, value) {
+class EcmaScriptToken private constructor(type: CodeEditorColorToken, value: String) :
+    BaseToken(type, value) {
 
     companion object {
 
-        val REGEX = EcmaScriptToken(CodeEditorColorToken.SPECIAL_COLOR, "/regex/mode")
-        val SINGLE_COMMENT = EcmaScriptToken(CodeEditorColorToken.COMMENT_COLOR, "//")
-        val MULTI_COMMENT_START = EcmaScriptToken(CodeEditorColorToken.COMMENT_COLOR, "/*")
-        val MULTI_COMMENT_PART = EcmaScriptToken(CodeEditorColorToken.COMMENT_COLOR, "Comment")
-        val MULTI_COMMENT_END = EcmaScriptToken(CodeEditorColorToken.COMMENT_COLOR, "*/")
+        val EOF = EcmaScriptToken(CodeEditorColorToken.KEYWORD_COLOR, "EOF")
+        val REGEX = EcmaScriptToken(CodeEditorColorToken.SPECIAL_COLOR, "REGEX")
+        val SINGLE_COMMENT = EcmaScriptToken(CodeEditorColorToken.COMMENT_COLOR, "SINGLE_COMMENT")
+        val MULTI_COMMENT_START =
+            EcmaScriptToken(CodeEditorColorToken.COMMENT_COLOR, "MULTI_COMMENT_START")
+        val MULTI_COMMENT_PART =
+            EcmaScriptToken(CodeEditorColorToken.COMMENT_COLOR, "MULTI_COMMENT_PART")
+        val MULTI_COMMENT_END =
+            EcmaScriptToken(CodeEditorColorToken.COMMENT_COLOR, "MULTI_COMMENT_END")
 
-        val SINGLE_STRING = EcmaScriptToken(CodeEditorColorToken.STRING_COLOR, "\"String\"")
-        val TEMPLATE_STRING = EcmaScriptToken(CodeEditorColorToken.STRING_COLOR, "`Template`")
+        val SINGLE_STRING = EcmaScriptToken(CodeEditorColorToken.STRING_COLOR, "SINGLE_STRING")
+        val TEMPLATE_STRING = EcmaScriptToken(CodeEditorColorToken.STRING_COLOR, "TEMPLATE_STRING")
 
         val DIGIT_NUMBER =
             EcmaScriptToken(CodeEditorColorToken.NUMERICAL_VALUE_COLOR, "DIGIT_NUMBER")
@@ -107,98 +112,33 @@ class EcmaScriptToken private constructor(type: CodeEditorColorToken, value: Str
         val VOID = EcmaScriptToken(CodeEditorColorToken.KEYWORD_COLOR, "VOID")
         val DEBUGGER = EcmaScriptToken(CodeEditorColorToken.KEYWORD_COLOR, "DEBUGGER")
 
-        val PLUS = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "+")
-        val MINUS = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "-")
-        val MULTI = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "*")
-        val DIV = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "/")
-        val NOT = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "!")
-        val MOD = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "%")
-        val XOR = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "^")
-        val AND = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "&")
-        val QUESTION = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "?")
-        val COMP = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "~")
-        val DOT = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, ".")
-        val COMMA = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, ",")
-        val SEMICOLON = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, ";")
-        val EQUALS = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "=")
-        val LEFT_PARENTHESIS = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "(")
-        val RIGHT_PARENTHESIS = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, ")")
-        val LEFT_BRACKET = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "[")
-        val RIGHT_BRACKET = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "]")
-        val LEFT_BRACE = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "{")
-        val RIGHT_BRACE = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "}")
-        val OR = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "|")
-        val LESS_THAN = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "<")
-        val MORE_THAN = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, ">")
-
-        fun getTokens(): List<EcmaScriptToken> {
-            return listOf(
-                DIGIT_NUMBER,
-                IDENTIFIER,
-                WHITESPACE,
-                VAR,
-                LET,
-                CONST,
-                IF,
-                ELSE,
-                SWITCH,
-                CASE,
-                DEFAULT,
-                FOR,
-                WHILE,
-                DO,
-                BREAK,
-                CONTINUE,
-                FUNCTION,
-                RETURN,
-                YIELD,
-                ASYNC,
-                AWAIT,
-                THROW,
-                TRY,
-                CATCH,
-                FINALLY,
-                THIS,
-                WITH,
-                IN,
-                OF,
-                DELETE,
-                INSTANCEOF,
-                TYPEOF,
-                NEW,
-                CLASS,
-                EXTEND,
-                SET,
-                GET,
-                IMPORT,
-                AS,
-                FROM,
-                EXPORT,
-                VOID,
-                DEBUGGER,
-
-                PLUS,
-                MINUS,
-                MULTI,
-                DIV,
-                NOT,
-                MOD,
-                XOR,
-                AND,
-                QUESTION,
-                COMP,
-                DOT,
-                COMMA,
-                SEMICOLON,
-                EQUALS,
-                LEFT_PARENTHESIS,
-                RIGHT_PARENTHESIS,
-                LEFT_BRACKET,
-                RIGHT_BRACKET,
-                LEFT_BRACE,
-                RIGHT_BRACE,
-            )
-        }
+        val PLUS = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "PLUS") // '+'
+        val MINUS = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "MINUS") // '-'
+        val MULTI = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "MULTI") // '*'
+        val DIV = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "DIV") // '/'
+        val COLON = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "COLON") // ':'
+        val NOT = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "NOT") // '!'
+        val MOD = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "MOD") // '%'
+        val XOR = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "XOR") // '^'
+        val AND = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "AND") // '&'
+        val QUESTION = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "QUESTION") // '?'
+        val COMP = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "COMP") // '~'
+        val DOT = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "DOT") // '.'
+        val COMMA = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "COMMA") // ','
+        val SEMICOLON = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "SEMICOLON") // ';'
+        val EQUALS = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "EQUALS") // '='
+        val LEFT_PARENTHESIS =
+            EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "LEFT_PARENTHESIS") // '('
+        val RIGHT_PARENTHESIS =
+            EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "RIGHT_PARENTHESIS") // ')'
+        val LEFT_BRACKET = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "LEFT_BRACKET") // '['
+        val RIGHT_BRACKET =
+            EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "RIGHT_BRACKET") // ']'
+        val LEFT_BRACE = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "LEFT_BRACE") // '{'
+        val RIGHT_BRACE = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "RIGHT_BRACE") // '}'
+        val OR = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "OR") // '|'
+        val LESS_THAN = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "LESS_THAN") // '<'
+        val MORE_THAN = EcmaScriptToken(CodeEditorColorToken.SYMBOL_COLOR, "MORE_THAN") // '>'
     }
 
 }
